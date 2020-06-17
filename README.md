@@ -18,20 +18,19 @@ Executar o serviço local
 
 ### `npm start`
 
-Aguarde para o navegador abrir o sistema em mode desenvolvimento.<br />
+Aguarde para o navegador abrir o sistema em modo desenvolvimento.<br />
 
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Acesso o endereço: [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-A pagina atualizara que ouver alguma edição.<br />
+A pagina atualizara se ouver alguma edição.<br />
 Qualquer erro aparecerá no console.
 
 
 
 ### `npm test`
 
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Executa a aplicaçao em teste modo watch.<br />
+Consulte a sessão teste [running tests](https://facebook.github.io/create-react-app/docs/running-tests) para mais informações.
 
 ### `npm build`
 
