@@ -1,11 +1,12 @@
-Arquetipo para construçaõd o front-end com reactjs, material-ui e react-router-dom
+Arquetipo para construçaõ do front-end com reactjs, material-ui e react-router-dom
 
 Referencia:
 
-https://material-ui.com/pt/
-https://reacttraining.com/react-router/web/guides/quick-start
-https://reactjs.org/docs/getting-started.html
-
+<ul>
+    <li>Reactjs Core: https://reactjs.org/docs/getting-started.html<br /></li>
+    <li>Componente de interface: https://material-ui.com/pt/ <br /></li>
+    <li>Componente de roteamento: https://reacttraining.com/react-router/<br /></li>
+</ul>
 
 ## Scripts do projeto
 
