@@ -2,6 +2,17 @@ import React, {useState} from 'react';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import {Container, Backdrop, CircularProgress} from '@material-ui/core';
 import { useCurrentUser } from "../server/UseCurrentUser";
+import Anonimo from "./user/home/Anonimo";
+import SolicitarAcessoForm from "./user/SolicitarAcessoForm";
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+  useParams
+} from "react-router-dom";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -22,11 +33,16 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
+function Topic() {
+  let { topicId } = useParams();
+  return <h3>Requested topic ID: {topicId}</h3>;
+}
+
 function Home() {
-    let [user, loading] = useCurrentUser();
+    const [user, loading] = useCurrentUser();
     const classes = useStyles();
     const [wait, setWait] = useState(false);
-
+    const match = useRouteMatch();
     
 
     function isPerfilAdm(){
@@ -38,13 +54,20 @@ function Home() {
         { !loading &&
             user && <h2>Ola: {user.name}</h2>
         }
-        {
-          !user && <h2>Arquetipo para construção do sistema!</h2>
-        }
       <Backdrop className={classes.backdrop} open={loading || wait}>
         <CircularProgress color="inherit" />
       </Backdrop>
 
+      <Switch>
+        <Route path={`${match.path}/:topicId`}>
+          <SolicitarAcessoForm />
+        </Route>
+        <Route path={match.path}>
+          {
+            !user && <Anonimo/>
+          }
+        </Route>
+      </Switch>
     </Container>
     )
   }

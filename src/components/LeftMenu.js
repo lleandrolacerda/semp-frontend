@@ -91,7 +91,6 @@ const useStyles = makeStyles({
         ))}
       </List>
       <Divider />
-      {/* { sideListPublico('left') } */}
     </div>
   );
   const sideListPublico = side => (
@@ -102,14 +101,20 @@ const useStyles = makeStyles({
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        {['All mail', 'Trash', 'show_chart', 'speaker_notes'].map((text, index) => (
-          <ListItem button key={text}>
+          <ListItem button to="/home" component={Link} key="Inicio">
             <ListItemIcon>
-              <Icon>{ text }</Icon> 
+              <Icon>home</Icon>  
             </ListItemIcon>
-            <ListItemText primary={text} />
+            <ListItemText primary="Inicio" >
+            </ListItemText>
           </ListItem>
-        ))}
+          <ListItem button to="/home/solicitarAcesso" component={Link} key="Solicitar Acesso">
+            <ListItemIcon>
+              <Icon>home</Icon>  
+            </ListItemIcon>
+            <ListItemText primary="Solicitar Acesso" >
+            </ListItemText>
+          </ListItem>
       </List>
     </div>
   );
@@ -122,7 +127,7 @@ const useStyles = makeStyles({
         onClose={toggleDrawer( false)}
         onOpen={toggleDrawer(true)}
       >
-        {loading? sideListPublico('left') : sideList('left')}
+        {loading ? sideListPublico('left') : sideList('left')}
       </SwipeableDrawer>
       
     </div>

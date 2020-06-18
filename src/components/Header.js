@@ -120,7 +120,6 @@ export default function Header(props) {
 
   const [userPost, setUserPost] = React.useState([]);
 
-  // const [profile, loading] = useFetch(API_BASE_URL + "/user/me");
   let [profile, loading] = useCurrentUser();
 
   const [state, setState] = React.useState({
