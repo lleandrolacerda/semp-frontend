@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: semp-frontend
+  annotations:
+    app.gitlab.com/env: homologacao
+    app.gitlab.com/app: semp-frontend
+spec:
+  selector:
+    matchLabels:
+      app: semp-frontend
+  template:
+    metadata:
+      labels:
+        app: semp-frontend
+      annotations:
+        app.gitlab.com/env: homologacao
+        app.gitlab.com/app: semp-frontend
+    spec:
+      containers:
+      - name: semp-frontend
+        image: registry.gitlab.com/prodf/semp-frontend:master
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+        - name: gitlabprodf
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: semp-frontend
+spec:
+  selector:
+    app: semp-frontend
+  ports:
+  - port: 80
+    targetPort: 80
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: semp-frontend
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+  - hosts:
+    - app.prodf.verytecnologia.com.br
+    secretName: semp-frontend-tls-secret
+  rules:
+  - host: app.prodf.verytecnologia.com.br
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: semp-frontend
+          servicePort: 80
