@@ -17,7 +17,7 @@ server {\n\
 }' > /etc/nginx/conf.d/default.conf
 
 RUN printf '\
-sed -i "s|http://localhost:8080|$app_base_url|" /usr/share/nginx/html/main.*\n\
+sed -i "s|http://localhost:8080|$app_base_url|" /usr/share/nginx/html/static/js/main.*\n\
 ' > /start.sh && chmod +x /start.sh
 
 EXPOSE 80
