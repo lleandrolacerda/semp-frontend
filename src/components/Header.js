@@ -133,63 +133,11 @@ export default function Header(props) {
 
   useEffect(() => {
 
-    // console.log(">>>useEffect<<<");
-    async function fetchData(){
-      const response = await fetch('http://localhost:8081/post/user/'+profile.id);
-      const data = await response.json();
-      if( data && data.length> 0 ){
-        let arr = [...userPost];
-        data.forEach(d => arr.push(d));
-        setUserPost( arr);
-        // setUserPost( data );
-      }
-    }
-
     if( !isLoadUserPost && !!profile ){
-      // console.log('>>>>>>', profile );
       setIsLoadUserPost(true);
-      // const response = await fetch('http://localhost:8081/post/user/'+profile.id);
-      // const data = response.json();
-      // console.log(data);
-      fetchData();
-      //TODO descomentar
-      // initEventSource();
     }
   });
 
-  const initEventSource = () => {
-    if( isSSEStarted ) return;
-
-    setIsSSEStarted(true);
-
-    console.log('>>>initEventSource<<<');
-    // const eventSource = new EventSource('http://localhost:8081/post/sse/'+profile.id); 
-    const eventSource = new EventSource('http://localhost:8081/post/user/'+profile.id); 
-    window.sseErro =0;
-        eventSource.onopen = (event) => {
-          window.sseErro =0;
-          console.log(">>>on open<<<");
-          console.log(">>>=======<<<");
-          setUserPost([]); 
-        }
-        eventSource.onmessage = (event) => {
-
-            const data = JSON.parse(event.data); 
-            let arr = [...userPost];
-
-            if( !(arr.find(p => p.id === data.id)) ){
-              setUserPost(a => [...a, data]);
-            }
-        };
-        eventSource.onerror = (event) => {
-          console.log(">>>ONERROR<<<");
-          console.log( window.sseErro );
-          console.log(">>>=======<<<");
-          if( window.sseErro > 3) eventSource.close();
-          window.sseErro += 1;
-          
-        };
-  }
   const handleLimparNotif = event =>{
     setUserPost([]);
     if( !state.open ) handleMenuClose();
