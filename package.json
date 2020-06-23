@@ -19,14 +19,16 @@
     "react-render-html": "^0.6.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
-    "react-spinner-material": "^1.2.0"
+    "react-spinner-material": "^1.2.0",
+    "sonarqube-scanner": "^2.6.0"
   },
   "proxy": "http://localhost:8080",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "sonar": "node sonar-project.js"
   },
   "eslintConfig": {
     "extends": "react-app"
