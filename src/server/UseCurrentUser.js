@@ -36,7 +36,7 @@ function useCurrentUser() {
                 if( !profile || profile.length === 0 ){
                     console.log(">>>NÃO pegando do logalstorage<<<");
                     return request({
-                        url: API_BASE_URL + "/user/me",
+                        url: API_BASE_URL + "/api/user/me",
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
