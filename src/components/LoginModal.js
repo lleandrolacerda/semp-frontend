@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import SignIn from './SignIn';
-import { GOOGLE_AUTH_URL } from '../constants';
+import { GOOGLE_AUTH_URL, WSO2_AUTH_URL } from '../constants';
 
 function getModalStyle() {
   const top = 50;
@@ -28,11 +28,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const chooseLogin = (
-  <div>
-    <div>
-      Login com Google: <a href={GOOGLE_AUTH_URL}>click here</a>
-    </div>
-  </div>
+      <p>Login com <a href={GOOGLE_AUTH_URL}>Google</a> ou <a href={WSO2_AUTH_URL}>WSO2</a></p>
 );
 
 const LoginModal = (props) => {
