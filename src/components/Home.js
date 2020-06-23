@@ -46,7 +46,6 @@ function TesteInfo(){
     .then(res => res.json())
     .then(
       (result) => {
-        // const ret = JSON.stringify(result) ;
         console.log( result.cadGastoFixo );
         setInfo(result.cadGastoFixo);
       },
