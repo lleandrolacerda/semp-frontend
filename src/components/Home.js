@@ -4,12 +4,11 @@ import {Container, Backdrop, CircularProgress} from '@material-ui/core';
 import { useCurrentUser } from "../server/UseCurrentUser";
 import Anonimo from "./user/home/Anonimo";
 import SolicitarAcessoForm from "./user/SolicitarAcessoForm";
+import SolicitarAcessoAcompanhar from "./user/SolicitarAcessoAcompanhar";
 
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   useRouteMatch,
   useParams
 } from "react-router-dom";
@@ -34,8 +33,8 @@ const useStyles = makeStyles((theme) =>
 );
 
 function Topic() {
-  let { topicId } = useParams();
-  return <h3>Requested topic ID: {topicId}</h3>;
+  let { id } = useParams();
+  return <h3>Não implementado id: {id}</h3>;
 }
 
 function TesteInfo(){
@@ -92,6 +91,11 @@ function Home() {
       </Backdrop>
 
       <Switch>
+
+      <Route path={`${match.path}/solicitarAcesso/:id`}>
+          <SolicitarAcessoAcompanhar/>
+        </Route>
+
         <Route path={`${match.path}/solicitarAcesso`}>
           <SolicitarAcessoForm />
         </Route>

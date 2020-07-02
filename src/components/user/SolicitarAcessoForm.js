@@ -100,6 +100,8 @@ export default function SolicitarAcessoForm() {
   const [openBackdrop, setOpenBackdrop] = React.useState(false);
   const history = useHistory();
   const [erro, setErro] = useState();
+  
+  const [solicitacao, setSolicitacao]= useState();
 
   const [documentos, setDocumentos] = useState(
     [
@@ -232,7 +234,6 @@ export default function SolicitarAcessoForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(">>>ainda nao implementado<<<<");
 
     let docs = [];
     documentos.map(d => docs.push({
@@ -266,168 +267,198 @@ export default function SolicitarAcessoForm() {
     }).then(response => {
         setOpenBackdrop(false);
         console.log(response);
-        if( response.status === 200){
-          history.push('/home');
+        if( response.status <= 300){
+          return response.json();
         }else{
           setErro( response );
         }
-    }).catch(error => {
+    }).then(res => setSolicitacao(res))
+    .catch(error => {
         setOpenBackdrop(false);
         console.log(">>ERRO<<", error);
     });
   }
 
-  return (
-    <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
-      <div className={classes.root}>
-      {
-        erro && <Alert severity="error">{erro.statusText}</Alert>
-      }
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Paper className={classes.paper}>
-              <Typography variant="subtitle1" gutterBottom>
-                F01 – Solicitar acesso (Apenas para usuários externos)
-                Funcionalidade para permitir que empresários solicitem acesso, preenchendo formulário e enviando documentação necessária para as devidas comprovações.
-            </Typography>
+  function SoclcitacaoOkInfo(props ){
+    const {info} = props;
 
-
-              <ExpansionPanel expanded={expanded.pn1} onChange={handleChange('pn1')}>
-                <ExpansionPanelSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1bh-content"
-                  id="panel1bh-header"
-                >
-                  <Typography className={classes.heading}>Responsável pelas informações</Typography>
-                  <Typography className={classes.secondaryHeading}>Informe o contato</Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <Grid container spacing={1}>
-                    <Grid item xs={4}>
-                      <TextField
-                        required
-                        label="CPF"
-                        value={values.textmask}
-                        onChange={handleChangeInputForm}
-                        onBlur={handleLostFocusCPF}
-                        error={error.cpf.erro}
-                        helperText={error.cpf.msg}
-                        name="cpf"
-                        id="cpf-mask-input"
-                        InputProps={{
-                          inputComponent: CPFMask,
-                        }}
-                        variant="outlined"
-                      />
-                    </Grid>
-                    <Grid item xs={8}>
-                      <TextField
-                        fullWidth
-                        label="Nome"
-                        value={values.nome}
-                        onChange={handleChangeInputForm}
-                        name="nome"
-                        id="nome-input"
-                        variant="outlined"
-                      />
-                    </Grid>
-                    <Grid item xs={4}>
-                      <TextField
-                        required
-                        label="Telefone para contato"
-                        value={values.telefone}
-                        onChange={handleChangeInputForm}
-                        name="tel"
-                        id="tel-mask-input"
-                        InputProps={{
-                          inputComponent: TelMask,
-                        }}
-                        variant="outlined"
-                      />
-                    </Grid>
-                    <Grid item xs={8}>
-                      <TextField
-                        required
-                        fullWidth
-                        label="Email para contato"
-                        value={values.telefone}
-                        onChange={handleChangeInputForm}
-                        name="email"
-                        id="email-input"
-                        variant="outlined"
-                      />
-                    </Grid>
-                  </Grid>
-
-
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-
-              <ExpansionPanel expanded={expanded.pn2} onChange={handleChange('pn2')}>
-                <ExpansionPanelSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel2bh-content"
-                  id="panel2bh-header"
-                >
-                  <Typography className={classes.heading}>Informação da empresa</Typography>
-                  <Typography className={classes.secondaryHeading}>Empresa que esta pleiteando o projeto</Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <Grid container spacing={1}>
-                    <Grid item xs={4}>
-                      <TextField
-                        required
-                        error={error.cnpj.erro}
-                        helperText={error.cnpj.msg}
-                        label="CNPJ"
-                        value={values.textmask}
-                        onChange={handleChangeInputForm}
-                        onBlur={handleLostFocusCNPJ}
-                        name="cnpj"
-                        id="cnpj-mask-input"
-                        InputProps={{
-                          inputComponent: CNPJMask,
-                        }}
-                        variant="outlined"
-                      />
-                    </Grid>
-                    <Grid item xs={8}>
-                      <TextField
-                        fullWidth
-                        label="Nome Fantasia"
-                        value={values.nomeEmpresa}
-                        onChange={handleChangeInputForm}
-                        name="nomeEmpresa"
-                        id="nome-empresa-input"
-                        variant="outlined"
-                      />
-                    </Grid>
-                  </Grid>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-              {
-                values.cnpj.length > 0 && values.nomeEmpresa.length > 0 && <SolicitarAcessoDocTable rows={documentos} setRows={setDocumentos} erro={erro} setErro={setErro}/>
-              }
-              
-            </Paper>
-          </Grid>
-
+    return (
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>
+            <Typography variant="subtitle1" gutterBottom>
+              F01 – Solicitar acesso (Apenas para usuários externos)
+              Funcionalidade para permitir que empresários solicitem acesso, preenchendo formulário e enviando documentação necessária para as devidas comprovações.
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Sua solicitação foi recebida.
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Aguar um momento que receberá instruções por email da analise da sua solicitação. Tabem poderá acompanhar a solicitação pelo link <a href={"/home/solicitarAcesso/"+info.id}>estado da solicitação</a>,         
+          </Typography>
+            
+          </Paper>
         </Grid>
-      </div>
-      <center>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-        >
-          Solicitar
-        </Button>
-      </center>
-      <Paper />
-      <Backdrop className={classes.backdrop} open={openBackdrop} >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    </form>
-  );
+      </Grid>
+    )
+  }
+  
+  return (
+    <div>
+      {
+        solicitacao ? <SoclcitacaoOkInfo info={solicitacao}/> : 
+        <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
+          <div className={classes.root}>
+          {
+            erro && <Alert severity="error">{erro.statusText}</Alert>
+          }
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                  <Typography variant="subtitle1" gutterBottom>
+                    F01 – Solicitar acesso (Apenas para usuários externos)
+                    Funcionalidade para permitir que empresários solicitem acesso, preenchendo formulário e enviando documentação necessária para as devidas comprovações.
+                </Typography>
+
+
+                  <ExpansionPanel expanded={expanded.pn1} onChange={handleChange('pn1')}>
+                    <ExpansionPanelSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel1bh-content"
+                      id="panel1bh-header"
+                    >
+                      <Typography className={classes.heading}>Responsável pelas informações</Typography>
+                      <Typography className={classes.secondaryHeading}>Informe o contato</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                      <Grid container spacing={1}>
+                        <Grid item xs={4}>
+                          <TextField
+                            required
+                            label="CPF"
+                            value={values.textmask}
+                            onChange={handleChangeInputForm}
+                            onBlur={handleLostFocusCPF}
+                            error={error.cpf.erro}
+                            helperText={error.cpf.msg}
+                            name="cpf"
+                            id="cpf-mask-input"
+                            InputProps={{
+                              inputComponent: CPFMask,
+                            }}
+                            variant="outlined"
+                          />
+                        </Grid>
+                        <Grid item xs={8}>
+                          <TextField
+                            fullWidth
+                            label="Nome"
+                            value={values.nome}
+                            onChange={handleChangeInputForm}
+                            name="nome"
+                            id="nome-input"
+                            variant="outlined"
+                          />
+                        </Grid>
+                        <Grid item xs={4}>
+                          <TextField
+                            required
+                            label="Telefone para contato"
+                            value={values.telefone}
+                            onChange={handleChangeInputForm}
+                            name="tel"
+                            id="tel-mask-input"
+                            InputProps={{
+                              inputComponent: TelMask,
+                            }}
+                            variant="outlined"
+                          />
+                        </Grid>
+                        <Grid item xs={8}>
+                          <TextField
+                            required
+                            fullWidth
+                            label="Email para contato"
+                            value={values.telefone}
+                            onChange={handleChangeInputForm}
+                            name="email"
+                            id="email-input"
+                            variant="outlined"
+                          />
+                        </Grid>
+                      </Grid>
+
+
+                    </ExpansionPanelDetails>
+                  </ExpansionPanel>
+
+                  <ExpansionPanel expanded={expanded.pn2} onChange={handleChange('pn2')}>
+                    <ExpansionPanelSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel2bh-content"
+                      id="panel2bh-header"
+                    >
+                      <Typography className={classes.heading}>Informação da empresa</Typography>
+                      <Typography className={classes.secondaryHeading}>Empresa que esta pleiteando o projeto</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                      <Grid container spacing={1}>
+                        <Grid item xs={4}>
+                          <TextField
+                            required
+                            error={error.cnpj.erro}
+                            helperText={error.cnpj.msg}
+                            label="CNPJ"
+                            value={values.textmask}
+                            onChange={handleChangeInputForm}
+                            onBlur={handleLostFocusCNPJ}
+                            name="cnpj"
+                            id="cnpj-mask-input"
+                            InputProps={{
+                              inputComponent: CNPJMask,
+                            }}
+                            variant="outlined"
+                          />
+                        </Grid>
+                        <Grid item xs={8}>
+                          <TextField
+                            fullWidth
+                            label="Nome Fantasia"
+                            value={values.nomeEmpresa}
+                            onChange={handleChangeInputForm}
+                            name="nomeEmpresa"
+                            id="nome-empresa-input"
+                            variant="outlined"
+                          />
+                        </Grid>
+                      </Grid>
+                    </ExpansionPanelDetails>
+                  </ExpansionPanel>
+                  {
+                    values.cnpj.length > 0 && values.nomeEmpresa.length > 0 && <SolicitarAcessoDocTable rows={documentos} setRows={setDocumentos} erro={erro} setErro={setErro}/>
+                  }
+                  
+                </Paper>
+              </Grid>
+
+            </Grid>
+          </div>
+          <center>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Solicitar
+            </Button>
+          </center>
+          <Paper />
+          <Backdrop className={classes.backdrop} open={openBackdrop} >
+            <CircularProgress color="inherit" />
+          </Backdrop>
+        </form>
+      }
+    </div>
+    );
 }
