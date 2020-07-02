@@ -254,8 +254,7 @@ export default function SolicitarAcessoForm() {
       documentos: docs
     }
     
-    console.log( dados );
-    
+    setOpenBackdrop(true);
     fetch('/api/acesso/solicitar', {
       method: 'POST',
       headers: {
@@ -265,9 +264,15 @@ export default function SolicitarAcessoForm() {
       body: JSON.stringify(dados),
       credentials: 'include'
     }).then(response => {
+        setOpenBackdrop(false);
         console.log(response);
-        history.push('/home');
+        if( response.status === 200){
+          history.push('/home');
+        }else{
+          setErro( response );
+        }
     }).catch(error => {
+        setOpenBackdrop(false);
         console.log(">>ERRO<<", error);
     });
   }
