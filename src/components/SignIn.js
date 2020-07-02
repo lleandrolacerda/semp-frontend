@@ -129,8 +129,6 @@ export default function SignIn(props) {
             </Collapse>
           </div>
 
-
-
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
