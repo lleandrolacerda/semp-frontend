@@ -6,6 +6,9 @@ import OAuth2RedirectHandler from './components/oauth2/OAuth2RedirectHandler';
 import FormMinhaConta from './components/user/FormMinhaConta';
 
 import Perfil from './components/user/Perfil';
+
+import CriarPerfilPanel from './components/user/CriarPerfilPanel';
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -30,6 +33,7 @@ function App() {
           <Route path="/oauth2/redirect" component={OAuth2RedirectHandler}></Route> 
           <Route path="/minhaConta"><FormMinhaConta/></Route>
           <Route path="/Perfil"><Perfil/></Route>
+          <Route path="/criarPerfil"><CriarPerfilPanel/></Route>
          
           <Route component={NotFound}></Route> 
           
