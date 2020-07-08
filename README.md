@@ -6,6 +6,8 @@ Referencia:
     <li>Reactjs Core: https://reactjs.org/docs/getting-started.html<br /></li>
     <li>Componente de interface: https://material-ui.com/pt/ <br /></li>
     <li>Componente de roteamento: https://reacttraining.com/react-router/<br /></li>
+    <li>Componente data picker: https://material-ui-pickers.dev/getting-started/installation</li>
+    <li>Provider do datapicker: https://material-ui-pickers.dev/getting-started/installation</li>
 </ul>
 
 ## Scripts do projeto
