@@ -17,6 +17,14 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useHistory } from "react-router-dom";
 import Alert from '@material-ui/lab/Alert';
+import Container from '@material-ui/core/Container';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+
+import {
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -105,13 +113,13 @@ export default function SolicitarAcessoForm() {
 
   const [documentos, setDocumentos] = useState(
     [
-        { nome:'Comprovação doc1', obs:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ornare, quam congue faucibus vehicula, dolor purus dapibus felis, eu feugiat ligula magna eget nisi. Pellentesque eu metus non magna mollis pretium.', doc:''},
-        { nome:'Comprovação doc2', obs:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ornare, quam congue faucibus vehicula, dolor purus dapibus felis, eu feugiat ligula magna eget nisi. Pellentesque eu metus non magna mollis pretium.', doc:''},
-        { nome:'Comprovação doc3', obs:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ornare, quam congue faucibus vehicula, dolor purus dapibus felis, eu feugiat ligula magna eget nisi. Pellentesque eu metus non magna mollis pretium.', doc:''},
-        { nome:'Comprovação doc4', obs:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ornare, quam congue faucibus vehicula, dolor purus dapibus felis, eu feugiat ligula magna eget nisi. Pellentesque eu metus non magna mollis pretium.', doc:''},
-        { nome:'Comprovação doc5', obs:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ornare, quam congue faucibus vehicula, dolor purus dapibus felis, eu feugiat ligula magna eget nisi. Pellentesque eu metus non magna mollis pretium.', doc:''},
+        { nome:'Cartão CNPJ', doc:''},
+        { nome:'Procuração', doc:''},
+        { nome:'Documento de Identificaçaõ', doc:''},
     ]
   );
+
+  const [selectedDate, setSelectedDate] = React.useState(null);
 
   const [expanded, setExpanded] = React.useState({
     pn1:true,
@@ -121,6 +129,7 @@ export default function SolicitarAcessoForm() {
     cpf: '',
     nome: '',
     tel: '',
+    nomeMae: '',
     email: '',
     cnpj:'',
     nomeEmpresa:'',
@@ -140,6 +149,14 @@ export default function SolicitarAcessoForm() {
     let pn = {...expanded};
     pn[panel] = isExpanded;
     setExpanded(pn);
+  };
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    setValues({
+      ...values,
+      'dataNascimento': date,
+    });
   };
 
   const handleChangeInputForm = (event) => {
@@ -214,7 +231,6 @@ export default function SolicitarAcessoForm() {
           setValues({
             ...values, nomeEmpresa:result.nome
           });
-          
         },
         (error) => {
           console.log( error );
@@ -304,7 +320,9 @@ export default function SolicitarAcessoForm() {
   }
   
   return (
-    <div>
+    <Container maxWidth="md">
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+
       {
         solicitacao ? <SoclcitacaoOkInfo info={solicitacao}/> : 
         <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
@@ -315,12 +333,6 @@ export default function SolicitarAcessoForm() {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Paper className={classes.paper}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    F01 – Solicitar acesso (Apenas para usuários externos)
-                    Funcionalidade para permitir que empresários solicitem acesso, preenchendo formulário e enviando documentação necessária para as devidas comprovações.
-                </Typography>
-
-
                   <ExpansionPanel expanded={expanded.pn1} onChange={handleChange('pn1')}>
                     <ExpansionPanelSummary
                       expandIcon={<ExpandMoreIcon />}
@@ -343,6 +355,7 @@ export default function SolicitarAcessoForm() {
                             helperText={error.cpf.msg}
                             name="cpf"
                             id="cpf-mask-input"
+                            fullWidth
                             InputProps={{
                               inputComponent: CPFMask,
                             }}
@@ -360,6 +373,35 @@ export default function SolicitarAcessoForm() {
                             variant="outlined"
                           />
                         </Grid>
+
+                        <Grid item xs={4}>
+                          <KeyboardDatePicker
+                            disableToolbar
+                            variant="inline"
+                            id="dataNascimento"
+                            label="Data Nascimento"
+                            format="MM/dd/yyyy"
+                            fullWidth
+                            value={selectedDate}
+                            onChange={handleDateChange}
+                            KeyboardButtonProps={{
+                              'aria-label': 'change date',
+                            }}
+                            inputVariant="outlined"
+                          />
+                        </Grid>
+                        <Grid item xs={8}>
+                          <TextField
+                            fullWidth
+                            label="Nome da mae"
+                            value={values.nomeMae}
+                            onChange={handleChangeInputForm}
+                            name="nomeMae"
+                            id="nome-Mae"
+                            variant="outlined"
+                          />
+                        </Grid>
+
                         <Grid item xs={4}>
                           <TextField
                             required
@@ -368,6 +410,7 @@ export default function SolicitarAcessoForm() {
                             onChange={handleChangeInputForm}
                             name="tel"
                             id="tel-mask-input"
+                            fullWidth
                             InputProps={{
                               inputComponent: TelMask,
                             }}
@@ -435,7 +478,8 @@ export default function SolicitarAcessoForm() {
                     </ExpansionPanelDetails>
                   </ExpansionPanel>
                   {
-                    values.cnpj.length > 0 && values.nomeEmpresa.length > 0 && <SolicitarAcessoDocTable rows={documentos} setRows={setDocumentos} erro={erro} setErro={setErro}/>
+                    values.cnpj.length > 0 && values.nomeEmpresa.length > 0 && 
+                    <SolicitarAcessoDocTable rows={documentos} setRows={setDocumentos} erro={erro} setErro={setErro}/>
                   }
                   
                 </Paper>
@@ -459,6 +503,7 @@ export default function SolicitarAcessoForm() {
           </Backdrop>
         </form>
       }
-    </div>
+      </MuiPickersUtilsProvider>
+    </Container>
     );
 }

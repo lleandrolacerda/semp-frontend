@@ -60,15 +60,6 @@ let currentRow=-1;
 export default function SolicitarAcessoDocTable(props) {
     const classes = useStyles();
     const {rows, setRows, erro, setErro} = props;
-    // const [rows, setRows] = useState(
-    //     [
-    //         { nome:'Comprovação doc1', obs:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ornare, quam congue faucibus vehicula, dolor purus dapibus felis, eu feugiat ligula magna eget nisi. Pellentesque eu metus non magna mollis pretium.', doc:''},
-    //         { nome:'Comprovação doc2', obs:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ornare, quam congue faucibus vehicula, dolor purus dapibus felis, eu feugiat ligula magna eget nisi. Pellentesque eu metus non magna mollis pretium.', doc:''},
-    //         { nome:'Comprovação doc3', obs:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ornare, quam congue faucibus vehicula, dolor purus dapibus felis, eu feugiat ligula magna eget nisi. Pellentesque eu metus non magna mollis pretium.', doc:''},
-    //         { nome:'Comprovação doc4', obs:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ornare, quam congue faucibus vehicula, dolor purus dapibus felis, eu feugiat ligula magna eget nisi. Pellentesque eu metus non magna mollis pretium.', doc:''},
-    //         { nome:'Comprovação doc5', obs:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ornare, quam congue faucibus vehicula, dolor purus dapibus felis, eu feugiat ligula magna eget nisi. Pellentesque eu metus non magna mollis pretium.', doc:''},
-    //     ]
-    // );
 
     function fileClick(){
         let file = document.getElementById("file");
@@ -111,9 +102,8 @@ export default function SolicitarAcessoDocTable(props) {
             <Table className={classes.table} aria-label="customized table">
                 <TableHead>
                     <TableRow>
-                        <StyledTableCell width='200px'>Comprovação</StyledTableCell>
+                        <StyledTableCell width='200px'>Tipo documento</StyledTableCell>
                         <StyledTableCell>Informação</StyledTableCell>
-                        <StyledTableCell>Documento</StyledTableCell>
                         <StyledTableCell width='100px' align="center">Ação</StyledTableCell>
                     </TableRow>
                 </TableHead>
@@ -123,7 +113,6 @@ export default function SolicitarAcessoDocTable(props) {
                             <StyledTableCell component="th" scope="row">
                                 {row.nome}
                             </StyledTableCell>
-                            <StyledTableCell >{row.obs}</StyledTableCell>
                             <StyledTableCell >{row.doc}</StyledTableCell>
                             <TableCell>
 
