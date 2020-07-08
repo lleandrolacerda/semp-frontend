@@ -4,9 +4,9 @@ import Header from "./components/Header";
 import NotFound from './components/common/NotFound';
 import OAuth2RedirectHandler from './components/oauth2/OAuth2RedirectHandler';
 import FormMinhaConta from './components/user/FormMinhaConta';
-
+import VerPost from './components/user/home/VerPost';
 import Perfil from './components/user/Perfil';
-
+import Login from "./components/user/home/Login";
 import CriarPerfilPanel from './components/user/CriarPerfilPanel';
 
 import {
@@ -34,6 +34,8 @@ function App() {
           <Route path="/minhaConta"><FormMinhaConta/></Route>
           <Route path="/Perfil"><Perfil/></Route>
           <Route path="/criarPerfil"><CriarPerfilPanel/></Route>
+          <Route path="/login"><Login/></Route>
+          <Route path="/post/:id" render={(props)=> <VerPost {...props} />} />
          
           <Route component={NotFound}></Route> 
           

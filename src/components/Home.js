@@ -2,9 +2,10 @@ import React, {useState, useEffect} from 'react';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import {Container, Backdrop, CircularProgress} from '@material-ui/core';
 import { useCurrentUser } from "../server/UseCurrentUser";
-import Anonimo from "./user/home/Anonimo";
+
 import SolicitarAcessoForm from "./user/SolicitarAcessoForm";
 import SolicitarAcessoAcompanhar from "./user/SolicitarAcessoAcompanhar";
+import { Redirect } from 'react-router-dom';
 
 import {
   Switch,
@@ -32,43 +33,6 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-function Topic() {
-  let { id } = useParams();
-  return <h3>Não implementado id: {id}</h3>;
-}
-
-function TesteInfo(){
-
-  useEffect(()=>{
-   if( !info){
-    fetch("/api/info")
-    .then(res => res.json())
-    .then(
-      (result) => {
-        console.log( result.cadGastoFixo );
-        setInfo(result.cadGastoFixo);
-      },
-      (error) => {
-        console.log( error );
-      }
-    )
-   } 
-  });
-  
-
-  const [info, setInfo] = useState();
-  return(
-    <div>
-      <h3>Dados do backend</h3>
-      { 
-      info && <div>
-          <p><b>Titulo:</b> {info.titulo}</p>
-          <p><b>Descricao:</b> {info.descricao}</p>
-          </div>
-      }
-    </div>
-  )
-}
 
 function Home() {
     const [user, loading] = useCurrentUser();
@@ -99,13 +63,10 @@ function Home() {
         <Route path={`${match.path}/solicitarAcesso`}>
           <SolicitarAcessoForm />
         </Route>
-        <Route path={`${match.path}/testeInfo`}>
-          <TesteInfo />
-        </Route>
         
         <Route path={match.path}>
           {
-            !user && <Anonimo/>
+            !localStorage.accessToken && <Redirect to="/login" />
           }
         </Route>
       </Switch>

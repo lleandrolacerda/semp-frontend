@@ -132,11 +132,70 @@ export default function Header(props) {
   const history = useHistory();
 
   useEffect(() => {
+    async function fetchData(){
+      const response = await fetch('/api/post/user/'+profile.id);
+      const data = await response.json();
+      if( data && data.length> 0 ){
+        let arr = []; //[...userPost];
+        data.forEach(d => {
+          let item = arr.find( el => el.titulo === d.titulo);
+          if( !item ){
+            item = {
+              titulo: d.titulo,
+              lst: [d]
+            };
+            arr.push(item);
+          }else{
+            item.lst.push(d);
+          }
+          
+        });
+        setUserPost( arr);
+        // setUserPost( data );
+      }
+    }
 
     if( !isLoadUserPost && !!profile ){
       setIsLoadUserPost(true);
+      fetchData();
+      //TODO descomentar
+      // initEventSource();
     }
   });
+
+  const initEventSource = () => {
+    if( isSSEStarted ) return;
+
+    setIsSSEStarted(true);
+
+    console.log('>>>initEventSource<<<');
+    // const eventSource = new EventSource('http://localhost:8081/post/sse/'+profile.id); 
+    const eventSource = new EventSource('/api/post/user/'+profile.id); 
+    window.sseErro =0;
+        eventSource.onopen = (event) => {
+          window.sseErro =0;
+          console.log(">>>on open<<<");
+          console.log(">>>=======<<<");
+          setUserPost([]); 
+        }
+        eventSource.onmessage = (event) => {
+
+            const data = JSON.parse(event.data); 
+            let arr = [...userPost];
+
+            if( !(arr.find(p => p.id === data.id)) ){
+              setUserPost(a => [...a, data]);
+            }
+        };
+        eventSource.onerror = (event) => {
+          console.log(">>>ONERROR<<<");
+          console.log( window.sseErro );
+          console.log(">>>=======<<<");
+          if( window.sseErro > 3) eventSource.close();
+          window.sseErro += 1;
+          
+        };
+  }
 
   const handleLimparNotif = event =>{
     setUserPost([]);
@@ -201,7 +260,9 @@ export default function Header(props) {
   };
   const handleOpenNotificacao = (e, post) => {
     console.log('>>>handleOpenNotificacao<<<', post);
-    history.push("/post/"+post.idPost);
+    let ids = '';
+    post.lst.forEach(p => ids+= p.idPost+",");
+    history.push("/post/"+ids);
     handleMenuClose();
   }
   
@@ -240,7 +301,18 @@ export default function Header(props) {
       )
     }
   };
+function sizeUserPost(up){
+  let qtd = 0;
+  if( up){
+    up.forEach(u =>{
+
+      qtd += u.lst.length;
+    });
+  }
+  return qtd;
+}
 const renderMenuNotificacao =(
+  
   <Menu
       anchorEl={anchorElNotif}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -250,11 +322,11 @@ const renderMenuNotificacao =(
       open={isMenuNotifiOpen}
       onClose={handleMenuClose}
     >
-      {userPost && userPost.length > 0 ? 
+      {userPost && sizeUserPost(userPost) > 0 ? 
         <div>
           {
            userPost.map((p, index) => (
-            <MenuItem key={index} onClick={(e)=> handleOpenNotificacao(e,   p)} >{p.info}</MenuItem>
+            <MenuItem key={index} onClick={(e)=> handleOpenNotificacao(e,   p)} >{p.titulo + "("+p.lst.length+")"}</MenuItem>
           ))
           }
           <Divider />
@@ -301,7 +373,7 @@ const renderMenuNotificacao =(
       </MenuItem> */}
       <MenuItem>
         <IconButton aria-label="show 11 new notifications" color="inherit">
-          <Badge badgeContent={ userPost.length } color="secondary">
+          <Badge badgeContent={ sizeUserPost(userPost) } color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>
@@ -321,10 +393,9 @@ const renderMenuNotificacao =(
     </Menu>
   );
 
-  return (
-
-    <div className={classes.grow}>
-      <AppBar position="static">
+const conteudo = (  
+  <div className={classes.grow}>
+          <AppBar position="static">
         <Toolbar>
           <IconButton
             edge="start"
@@ -364,7 +435,7 @@ const renderMenuNotificacao =(
               aria-haspopup="true"
               onClick={handleNotifMenuOpen }
               >
-              <Badge badgeContent={ userPost.length } color="secondary" >
+              <Badge badgeContent={ sizeUserPost(userPost) } color="secondary" >
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -400,5 +471,13 @@ const renderMenuNotificacao =(
       {renderMenuNotificacao}
       <LoginModal open={openLogin} onchange={handleLogin}/>
     </div>
+) 
+  return (
+    <div>
+      {
+         profile && conteudo
+      }
+    </div>
+      
   );
 }

@@ -3,14 +3,11 @@ import './NotFound.css';
 import { Link } from 'react-router-dom';
 import { useLocation, Redirect } from 'react-router-dom';
 
-
 function NotFound() {
-
     const location = useLocation();  
 
     useEffect(() => {
         console.log("--->", location );
-
     });
     
     return (
@@ -19,13 +16,15 @@ function NotFound() {
                 404
             </h1>
             <div className="desc">
-                The Page you're looking for was not found.
+                Pagina não encontrada.
             </div>
             <Link to="/"><button className="go-back-btn btn btn-primary" type="button">Go Back</button></Link>
-            { (location.pathname === '/') ? <Redirect to="/home" /> : ""}
+            { 
+                (location.pathname === '/') ? 
+                <Redirect to="/home" /> : ""
+            }
         </div>
     );
-
 }
 
 export default NotFound;

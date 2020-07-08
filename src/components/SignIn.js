@@ -19,12 +19,12 @@ import IconButton from '@material-ui/core/IconButton';
 import { login } from '../util/APIUtils';
 import { ACCESS_TOKEN } from '../constants';
 
-function Copyright() {
+function BemVindo() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
+      {'Bem Vindo ao '}
       <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+        SEMP-PRODF
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -89,8 +89,10 @@ export default function SignIn(props) {
             localStorage.setItem(ACCESS_TOKEN, response.accessToken);
             console.log("You're successfully logged in!");
             // setOpen(false);
-            props.onChange(false);
-            window.location.reload(); 
+            if( props.onChange ) props.onChange(false);
+            // window.location.reload();
+            window.location.href = "/home";
+ 
             
         }).catch(error => {
 
@@ -135,7 +137,7 @@ export default function SignIn(props) {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Logar
         </Typography>
         <form className={classes.form} noValidate method="post" onSubmit={handleSubmit}>
           <TextField
@@ -160,10 +162,7 @@ export default function SignIn(props) {
             id="password"
             autoComplete="current-password" onChange={handleInputChange}
           />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
+          
           <Button
             type="submit"
             fullWidth
@@ -171,24 +170,24 @@ export default function SignIn(props) {
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            Entrar
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
+              <Link href="/recuperarSenhha" variant="body2">
+                Esqueci a senha
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
+              <Link href="/home/solicitarAcesso" variant="body2">
+                Solicitar Acesso
               </Link>
             </Grid>
           </Grid>
         </form>
       </div>
       <Box mt={8}>
-        <Copyright />
+        <BemVindo />
       </Box>
     </Container>
   );
