@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { withStyles, createStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -23,19 +23,6 @@ const StyledTableCell = withStyles((theme) =>
         },
     }),
 )(TableCell);
-
-const StyledTableCellDoc = withStyles((theme) =>
-    createStyles({
-        head: {
-            backgroundColor: theme.palette.common.black,
-            color: theme.palette.common.white,
-        },
-        body: {
-            fontSize: 10,
-        },
-    }),
-)(TableCell);
-
 const StyledTableRow = withStyles((theme) =>
     createStyles({
         root: {
@@ -45,10 +32,6 @@ const StyledTableRow = withStyles((theme) =>
         },
     }),
 )(TableRow);
-
-function createData(nome, obs, doc) {
-    return { nome, obs, doc };
-}
 
 const useStyles = makeStyles({
     table: {
@@ -103,7 +86,7 @@ export default function SolicitarAcessoDocTable(props) {
                 <TableHead>
                     <TableRow>
                         <StyledTableCell width='200px'>Tipo documento</StyledTableCell>
-                        <StyledTableCell>Informação</StyledTableCell>
+                        <StyledTableCell>Documento</StyledTableCell>
                         <StyledTableCell width='100px' align="center">Ação</StyledTableCell>
                     </TableRow>
                 </TableHead>

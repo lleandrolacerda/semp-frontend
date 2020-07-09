@@ -37,7 +37,14 @@ const useStyles = makeStyles({
       const mn = localStorage.getItem(ACCESS_TOKEN+"_menu");
       if( !profile || profile.length === 0 ) return;
       if( !mn ){
-        fetch("/api/menu/"+profile.id)
+        fetch("/api/menu/"+profile.id,
+        {
+          headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'Authorization': `Bearer ${localStorage.accessToken}`
+          }
+        })
           .then(res => res.json())
           .then(
             (result) => {

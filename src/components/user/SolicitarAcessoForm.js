@@ -15,7 +15,6 @@ import { ValidarCNPJ } from '../../constants/';
 import { ValidarCPF } from '../../constants/';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { useHistory } from "react-router-dom";
 import Alert from '@material-ui/lab/Alert';
 import Container from '@material-ui/core/Container';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -106,16 +105,15 @@ function CNPJMask(props) {
 export default function SolicitarAcessoForm() {
   const classes = useStyles();
   const [openBackdrop, setOpenBackdrop] = React.useState(false);
-  const history = useHistory();
   const [erro, setErro] = useState();
-  
+  const [editavel, setEditavel] = useState(false);
   const [solicitacao, setSolicitacao]= useState();
-
   const [documentos, setDocumentos] = useState(
     [
+        { nome:'Contrato Social', doc:''},
         { nome:'Cartão CNPJ', doc:''},
         { nome:'Procuração', doc:''},
-        { nome:'Documento de Identificaçaõ', doc:''},
+        { nome:'Documento de Identificação', doc:''},
     ]
   );
 
@@ -133,18 +131,9 @@ export default function SolicitarAcessoForm() {
     email: '',
     cnpj:'',
     nomeEmpresa:'',
-    numberformat: '1320',
   });
-  const [error, setError] = React.useState({
-    cnpj:{
-      erro:false,
-      msg:''
-    },
-    cpf:{
-      erro:false,
-      msg:''
-    }
-  })
+  const [error, setError] = React.useState(resetErro());
+
   const handleChange = (panel) => (event, isExpanded) => {
     let pn = {...expanded};
     pn[panel] = isExpanded;
@@ -160,7 +149,7 @@ export default function SolicitarAcessoForm() {
   };
 
   const handleChangeInputForm = (event) => {
-    console.log('>>>handleChangeMask<<<');
+    
     setValues({
       ...values,
       [event.target.name]: event.target.value,
@@ -168,7 +157,6 @@ export default function SolicitarAcessoForm() {
   };
 
   const handleLostFocusCPF=(e) => {
-    console.log( values.cpf, ValidarCNPJ(values.cpf) );
     
     setError({...error, 
       cpf:{
@@ -176,28 +164,41 @@ export default function SolicitarAcessoForm() {
       msg: ''
     }});
     const cpf = values.cpf.replace(/[&\/\\#,+()$~%.\-'":*?<>{}]/g,'').trim();
-
     
     if( cpf.length === 0 ) return;
 
     if( ValidarCPF(cpf)){
       // TODO buscar ou não CPF
-      // setOpenBackdrop(true);
-      // fetch("/api/v1/cpf/"+cpf)
-      // .then(res => res.json())
-      // .then(
-      //   (result) => {
-      //     console.log( result );
-      //     setValues({
-      //       ...values, nomeEmpresa:result.nome
-      //     });
-      //     setOpenBackdrop(false);
-      //   },
-      //   (error) => {
-      //     console.log( error );
-      //     setOpenBackdrop(false);
-      //   }
-      // )
+      setOpenBackdrop(true);
+      fetch("/api/v1/cpf/"+cpf)
+        .then(res => {
+          if( res.status <= 300) return res.json()
+        })
+        .then(
+          (result) => {
+            setOpenBackdrop(false);
+            
+            if( ! result){
+              setEditavel(true);
+              setValues({
+                ...values, nome:''
+              }); 
+            }else {
+              setValues({
+                ...values, 
+                nome:result.name,
+                nomeMae: result.nomeMae,
+                dataNascimento: new Date(result.dataNascimento)
+              });
+              setSelectedDate( new Date(result.dataNascimento) );
+              setEditavel(false);
+            }
+          },
+          (error) => {
+            
+            setOpenBackdrop(false);
+          }
+      )
     }else{
       setError({...error, 
         cpf:{
@@ -207,7 +208,6 @@ export default function SolicitarAcessoForm() {
     }
   }
   const handleLostFocusCNPJ=(e) =>{
-    console.log( values.cnpj, ValidarCNPJ(values.cnpj) );
     
     setError({...error, 
       cnpj:{
@@ -215,7 +215,6 @@ export default function SolicitarAcessoForm() {
       msg: ''
     }});
     const cnpj = values.cnpj.replace(/[&\/\\#,+()$~%.\-'":*?<>{}]/g,'').trim();
-    console.log("xoxoxo", cnpj, cnpj.length );
     if( cnpj.length === 0 ) return;
     
     if( ValidarCNPJ(cnpj) ){
@@ -223,7 +222,7 @@ export default function SolicitarAcessoForm() {
       
       // fetch("https://receitaws.com.br/v1/cnpj/"+cnpj)
       fetch("/api/v1/cnpj/"+cnpj)
-      .then(res => (res.status === 200)?res.json():setErro(res))
+      .then(res => (res.status <= 300)?res.json():setErro(res))
       .then(
         (result) => {
           setOpenBackdrop(false);
@@ -233,7 +232,6 @@ export default function SolicitarAcessoForm() {
           });
         },
         (error) => {
-          console.log( error );
           setOpenBackdrop(false);
         }
       )
@@ -243,11 +241,70 @@ export default function SolicitarAcessoForm() {
         erro: true,
         msg: 'CNPJ inválido'
       }});
-    }
-    
-
+    }    
   }
 
+  function resetErro(){
+    return {
+      cnpj:{
+        erro:false,
+        msg:''
+      },
+      cpf:{
+        erro:false,
+        msg:''
+      },
+      tel:{
+        erro:false,
+        msg:''
+      },
+      email: {
+        erro:false,
+        msg: ''
+      },
+      dt: {
+        erro:false,
+        msg: ''
+      }
+    }
+  }
+  function validarSubmit(dados){
+    let ok = true;
+    
+    let e = resetErro();
+    if( !dados.solicitante.telefone){
+      e.tel = {
+        erro: true,
+        msg: "Telefone é obritatório"
+      }
+      ok = false;
+    }
+    if( !dados.solicitante.email){
+      e.email = {
+        erro: true,
+        msg: "Telefone é obritatório"
+      }
+      ok = false;
+    }
+    if( !dados.solicitante.dataNascimento){
+      e.dt = {
+        erro: true,
+        msg: "Data de nascimento é obritatório"
+      }
+      ok = false;
+    }
+    if( !dados.empresa.cnpj){
+      e.cnpj = {
+        erro: true,
+        msg: "CNPJ é obritatório"
+      }
+      ok = false;
+    }
+    
+    setError(e);
+    
+    return ok;
+  }
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -262,13 +319,20 @@ export default function SolicitarAcessoForm() {
       solicitante:{
         nome: values.nome,
         cpf: values.cpf,
-        email: values.email
+        email: values.email,
+        dataNascimento: values.dataNascimento?values.dataNascimento.getTime():null,
+        nomeMae: values.nomeMae,
+        telefone: values.tel
       },
       empresa: {
         nomeEmpresa: values.nomeEmpresa,
         cnpj: values.cnpj
       },
       documentos: docs
+    }
+
+    if( !validarSubmit(dados)){
+      return
     }
     
     setOpenBackdrop(true);
@@ -282,7 +346,7 @@ export default function SolicitarAcessoForm() {
       credentials: 'include'
     }).then(response => {
         setOpenBackdrop(false);
-        console.log(response);
+        
         if( response.status <= 300){
           return response.json();
         }else{
@@ -291,7 +355,7 @@ export default function SolicitarAcessoForm() {
     }).then(res => setSolicitacao(res))
     .catch(error => {
         setOpenBackdrop(false);
-        console.log(">>ERRO<<", error);
+        
     });
   }
 
@@ -310,9 +374,8 @@ export default function SolicitarAcessoForm() {
             Sua solicitação foi recebida.
           </Typography>
           <Typography variant="body1" gutterBottom>
-            Aguar um momento que receberá instruções por email da analise da sua solicitação. Tabem poderá acompanhar a solicitação pelo link <a href={"/home/solicitarAcesso/"+info.id}>estado da solicitação</a>,         
-          </Typography>
-            
+            Aguar um momento que receberá instruções por email da analise da sua solicitação. Ou se preferir poderá acompanhar a solicitação pelo link <a href={"/home/solicitarAcesso/"+info.id}>estado da solicitação</a>,         
+          </Typography>            
           </Paper>
         </Grid>
       </Grid>
@@ -347,8 +410,9 @@ export default function SolicitarAcessoForm() {
                         <Grid item xs={4}>
                           <TextField
                             required
+                            autoFocus
                             label="CPF"
-                            value={values.textmask}
+                            value={values.cpf}
                             onChange={handleChangeInputForm}
                             onBlur={handleLostFocusCPF}
                             error={error.cpf.erro}
@@ -370,6 +434,9 @@ export default function SolicitarAcessoForm() {
                             onChange={handleChangeInputForm}
                             name="nome"
                             id="nome-input"
+                            InputProps={{
+                              readOnly: !editavel,
+                            }}
                             variant="outlined"
                           />
                         </Grid>
@@ -377,6 +444,8 @@ export default function SolicitarAcessoForm() {
                         <Grid item xs={4}>
                           <KeyboardDatePicker
                             disableToolbar
+                            error={error.dt.erro}
+                            helperText={error.dt.msg}
                             variant="inline"
                             id="dataNascimento"
                             label="Data Nascimento"
@@ -405,6 +474,8 @@ export default function SolicitarAcessoForm() {
                         <Grid item xs={4}>
                           <TextField
                             required
+                            error={error.tel.erro}
+                            helperText={error.tel.msg}
                             label="Telefone para contato"
                             value={values.telefone}
                             onChange={handleChangeInputForm}
@@ -420,6 +491,8 @@ export default function SolicitarAcessoForm() {
                         <Grid item xs={8}>
                           <TextField
                             required
+                            error={error.email.erro}
+                            helperText={error.email.msg}
                             fullWidth
                             label="Email para contato"
                             value={values.telefone}
@@ -458,7 +531,7 @@ export default function SolicitarAcessoForm() {
                             name="cnpj"
                             id="cnpj-mask-input"
                             InputProps={{
-                              inputComponent: CNPJMask,
+                              inputComponent: CNPJMask
                             }}
                             variant="outlined"
                           />
@@ -469,6 +542,9 @@ export default function SolicitarAcessoForm() {
                             label="Nome Fantasia"
                             value={values.nomeEmpresa}
                             onChange={handleChangeInputForm}
+                            InputProps={{
+                              readOnly: true,
+                            }}
                             name="nomeEmpresa"
                             id="nome-empresa-input"
                             variant="outlined"
