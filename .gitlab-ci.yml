@@ -32,8 +32,8 @@ frontend_container:
   - docker:dind
   script: 
     - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-    - docker build -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME} -f Dockerfile .
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}
+    - docker build -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA} -f Dockerfile .
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}
   needs:
     - job: frontend_build
       artifacts: true
@@ -43,8 +43,7 @@ frontend_deploy:
   stage: deploy
   image: bitnami/kubectl:1.17
   script:
-    - kubectl -n ${CI_ENVIRONMENT_SLUG} set image deployment/${CI_PROJECT_NAME} ${CI_PROJECT_NAME}=${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}
-    - kubectl -n ${CI_ENVIRONMENT_SLUG} rollout restart deployment ${CI_PROJECT_NAME}
+    - kubectl -n ${CI_ENVIRONMENT_SLUG} set image deployment/${CI_PROJECT_NAME} ${CI_PROJECT_NAME}=${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}
     - kubectl -n ${CI_ENVIRONMENT_SLUG} rollout status deployment ${CI_PROJECT_NAME}
   when: manual
   environment:
