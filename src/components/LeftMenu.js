@@ -9,7 +9,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Icon from '@material-ui/core/Icon';
 import { useCurrentUser } from "../server/UseCurrentUser";
 import { ACCESS_TOKEN } from '../constants';
-import AccessibilityIcon from '@material-ui/icons/Accessibility';
 import {
   Link
 } from "react-router-dom";

@@ -1,38 +1,76 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography, Container, Grid, Paper } from '@material-ui/core';
+import { Typography, Container, Grid, Paper, FormControl, InputLabel, Input, FormHelperText, Select } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-        padding: theme.spacing(2),
+  root: {
+    '& .MuiTextField-root': {
+      margin: theme.spacing(1),
+      width: 200,
     },
-    paper: {
-        padding: theme.spacing(2),
-        // textAlign: 'center',
-        color: theme.palette.text.secondary,
-      },
-    formControl: {
-        margin: theme.spacing(3),
-    },
+    flexGrow: 1,
+    width: '100%',
+    padding: theme.spacing(2),
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    //color: theme.palette.text.secondary,
+  },
+  formControl: {
+    margin: theme.spacing(3),
+  },
 }));
 
+const camposPerfil = [ {'nome': 'Nome do perfil', 'tipo': 'name' }];
 
-export default function CriarPerfilPanel(){
-    const classes = useStyles();
+let pageLoaded = false;
 
-    return (
-        <Container  className={classes.root} maxWidth="xl">
-            <Grid container spacing={3}>
-                <Grid item sm={12}>
-                    <Paper className={classes.paper}>
-                        <Typography variant="h6" gutterBottom>
-                            F06 – Criar perfil 
-                            Funcionalidade para permitir que o administrador crie perfis de acesso ao sistema, indicando as funcionalidades que o perfil terá acesso. 
-                        </Typography>
-                    </Paper>
-                </Grid>
+export default function CriarPerfilPanel() {
+  const classes = useStyles();
+  const [perfil, setPerfil] = React.useState({
+    perfis: []
+  });
+
+  useEffect(() => {
+    fetch("/api/perfil",
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Authorization': `Bearer ${localStorage.accessToken}`
+      }
+    }).then(res => res.json()).then((result) => {
+debugger;
+      if (!pageLoaded) {
+        setPerfil(result);
+        pageLoaded = true;
+      }
+    });
+  }, [perfil]);
+
+  const handleFiltrarSubmit = e => {
+console.log("Filtra perfil")
+  };
+
+  return (
+    <Container  className={classes.root} maxWidth="md">
+      <form className={classes.root} noValidate autoComplete="off" action="/api/perfil/filtrar" method="post" onSubmit={handleFiltrarSubmit} >
+        <Grid container className={classes.root} spacing={3}>
+          <Grid item sm={12}>
+            <Paper className={classes.paper}>
+              <Typography component="h1" variant="h5" gutterBottom>Perfis</Typography>
+            </Paper>
+            <Grid item sm={4}>
+              <FormControl fullWidth >
+                <InputLabel htmlFor="name">Campo</InputLabel>
+                <Input name="name" aria-describedby="nome-helper-text" />
+                <FormHelperText id="nome-helper-text">Campo do Filtro</FormHelperText>
+              </FormControl>
             </Grid>
-        </Container>
-    )
+          </Grid>
+        </Grid>
+      </form>
+    </Container>
+  )
 }
