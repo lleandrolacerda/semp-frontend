@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
-import { Button, Container, FormControl, FormHelperText, Grid, Input, InputLabel, Paper, Select, Typography } from '@material-ui/core';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
+import { Box, Button, Container, Collapse, FormControl, FormHelperText, Grid, IconButton, Input, InputLabel, Paper, 
+    Select, Typography, Table, TableBody, TableContainer, TableHead, TableRow, TableCell } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
+import CloseIcon from '@material-ui/icons/Close';
+import DeleteIcon from '@material-ui/icons/Delete';
+import UpdateIcon from '@material-ui/icons/Update';
+import PageviewIcon from '@material-ui/icons/Pageview';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,9 +37,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const StyledTableCell = withStyles((theme) => createStyles({
-  table: {
-    minWidth: 700,
-  },
   head: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
@@ -61,37 +58,56 @@ const camposPerfil = [ {'nome': '--', 'tipo': '' }, {'nome': 'Nome do perfil', '
 
 let pageLoaded = false;
 
-function createCampoPerfis() {
-  let items = [];
-  for (let i = 0; i < camposPerfil.length; i++) {
-    items.push(<option key={i} value={camposPerfil[i].tipo}>{camposPerfil[i].nome}</option>)
-  }
-  return items;
-}
-
 function createTable(perfis) {
   if (perfis && (perfis.length > 0)) {
     return (
       <TableBody>
         {perfis.map((row, i) => (
           <StyledTableRow key={i}>
-            <StyledTableCell component="th" scope="row">{row.name}</StyledTableCell>
-            <StyledTableCell component="th" scope="row">Cell2</StyledTableCell>
-            <StyledTableCell component="th" scope="row">Cell3</StyledTableCell>
+            <StyledTableCell component="td" scope="col">{ row.name }</StyledTableCell>
+            <StyledTableCell component="td" scope="col">Cell2</StyledTableCell>
+            <StyledTableCell component="td" scope="col">
+              <Box>
+                <IconButton onClick={ (event) => handleExcluirPerfil(event, i)}><DeleteIcon /></IconButton>
+                <IconButton onClick={ (event) => handleAtualizarPerfil(event, i)}><UpdateIcon /></IconButton>
+                <IconButton onClick={ (event) => handleVisualizarPerfil(event, i)}><PageviewIcon /></IconButton>
+              </Box>
+            </StyledTableCell>
           </StyledTableRow>
         ))}
       </TableBody>
     );
   } else {
     return (
-      <StyledTableRow><TableCell colSpan={3}><center>Nenhum Perfil cadastrado</center></TableCell></StyledTableRow>
+      <TableBody>
+        <StyledTableRow><TableCell colSpan={3}><center>Nenhum Perfil cadastrado</center></TableCell></StyledTableRow>
+      </TableBody>
     );
   }
+}
+
+function handleExcluirPerfil(event, i) {
+console.log("Excluir Perfil: ", i, event);
+}
+
+function handleAtualizarPerfil(event, i) {
+console.log("Atualizar Perfil: ", i, event);
+}
+
+function handleVisualizarPerfil(event, i) {
+console.log("Visualizar Perfil: ", i, event);
 }
 
 export default function CriarPerfilPanel() {
   const classes = useStyles();
   const [perfis, setPerfil] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
+  const [msgErro, setMsgErro] = React.useState('');
+  const [campo, setCampo] = React.useState('');
+
+  const handleChangeCampo = event => {
+    setCampo(event.target.value);
+  } 
 
   useEffect(() => {
     fetch("/api/perfil",
@@ -109,24 +125,81 @@ export default function CriarPerfilPanel() {
     });
   }, [perfis]);
 
-  const handleFiltrarSubmit = e => {
-console.log("Filtra perfil")
-  };
+  const handleFiltrarSubmit = event => {
+    event.preventDefault();
+    let endpoint = '/api/perfil/filtrar';
+    const filtro = document.getElementById('filtro').value;
+    if (!filtro || !campo) {
+      endpoint = '/api/perfil';
+    } else {
+      endpoint = endpoint + '/' + campo + '/' + filtro;
+    }
 
+    fetch(endpoint, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${localStorage.accessToken}`
+      },
+      credentials: 'include'
+    }).then(response => {
+      if (response.ok && (response.status == 200)) {
+        response.json().then((result) => {
+          setPerfil(result);
+        });
+      } else {
+        response.json().then((error) => {
+          setOpen(true);
+          setMsgErro((error && error.message) || 'Oops! Something went wrong. Please try again!' );
+        });
+      }
+      console.log(response);
+    }).catch(error => {
+      setOpen(true);
+      setMsgErro( (error && error.message) || 'Oops! Something went wrong. Please try again!' );
+      console.log(">>ERRO<<", error);
+    });
+  };
+console.log("Campo: " + campo);
   return (
     <Container className={classes.root} maxWidth="md">
-      <form className={classes.root} noValidate autoComplete="off" actuion="#" method="post" onSubmit={handleFiltrarSubmit} >
+      <div className={classes.root}>
+        <Collapse in={open}>
+          <Alert
+          action={
+            <IconButton
+            aria-label="close"
+            color="inherit"
+            size="small"
+            onClick={() => {
+                setOpen(false);
+            }}
+            >
+            <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          >
+          {msgErro}
+          </Alert>
+        </Collapse>
+      </div>
+
+      <form className={classes.root} noValidate autoComplete="off" action="/api/perfil/filtrar" method="get" onSubmit={handleFiltrarSubmit} >
         <Grid container className={classes.root} spacing={3}>
           <Grid item sm={12}>
             <Paper className={classes.paper}>
               <Typography component="h1" variant="h5" gutterBottom>Perfis</Typography>
             </Paper>
-            <Grid className={classes.gridControl} container direction="row" sm={12} spacing={2}>
+            <Grid className={classes.gridControl} container direction="row" spacing={2}>
               <Grid item sm={3}>
                 <FormControl className={classes.formControl} fullWidth >
                   <InputLabel htmlFor="name">Campo</InputLabel>
-                  <Select label="Campo filtro" placceholder="Campo">
-                    {createCampoPerfis()}
+                  <Select label="Campo filtro" placceholder="Campo" onChange={handleChangeCampo} defaultValue={''} >
+                    {
+                      camposPerfil.map((campo, i) => (
+                        <option key={i} value={camposPerfil[i].tipo}>{camposPerfil[i].nome}</option>
+                      ))
+                    }
                   </Select>
                   <FormHelperText id="nome-helper-text">Campo filtro</FormHelperText>
                 </FormControl>
@@ -134,7 +207,7 @@ console.log("Filtra perfil")
               <Grid item sm={7}>
                 <FormControl className={classes.formControl} fullWidth >
                   <InputLabel htmlFor="filtro"></InputLabel>
-                  <Input name="filtro" aria-describedby="filtro-helper-text" />
+                  <Input id="filtro" name="filtro" aria-describedby="filtro-helper-text" />
                   <FormHelperText id="filtro-helper-text"></FormHelperText>
                 </FormControl>
               </Grid>
@@ -155,8 +228,8 @@ console.log("Filtra perfil")
               <StyledTableCell>Qtde de funcionalidades</StyledTableCell>
               <StyledTableCell>Ação</StyledTableCell>
             </TableRow>
-            { createTable(perfis) }
           </TableHead>
+          { createTable(perfis) }
         </Table>
       </TableContainer>
       <Grid container item sm={12} justify="flex-end" >
