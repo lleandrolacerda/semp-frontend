@@ -56,7 +56,7 @@ const StyledTableRow = withStyles((theme) => createStyles({
   }
 }))(TableRow);
 
-const camposFuncionalidade = [ {'nome': '--', 'tipo': '' }, {'nome': 'Nome da Funcionalidade', 'tipo': 'name' }];
+const camposFuncionalidade = [ {'nome': '--', 'tipo': '' }, {'nome': 'Nome', 'tipo': 'name' }];
 
 let pageLoaded = false;
 
@@ -72,14 +72,14 @@ function createCampoFuncionalidade() {
   return items;
 }
 
-function createTable(perfis) {
-  if (perfis && (perfis.length > 0)) {
+function createTable(funcionalidades) {
+  if (funcionalidades && (funcionalidades.length > 0)) {
     return (
       <TableBody>
-        {perfis.map((row, i) => (
+        {funcionalidades.map((row, i) => (
           <StyledTableRow key={i}>
             <StyledTableCell component="th" scope="row">{row.name}</StyledTableCell>
-            <StyledTableCell component="th" scope="row">Cell2</StyledTableCell>
+            <StyledTableCell component="th" scope="row">{row.endereco}</StyledTableCell>
             <StyledTableCell component="th" scope="row">Cell3</StyledTableCell>
           </StyledTableRow>
         ))}

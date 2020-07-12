@@ -91,7 +91,7 @@ export default function CriarFuncionalidadePanel() {
             </FormControl>
             <FormControl fullWidth >
               <InputLabel htmlFor="endereco">Endereço</InputLabel>
-              <Input id="endereco" name="endereco" aria-describedby="nome-helper-text" />
+              <Input id="endereco" name="endereco" aria-describedby="endereco-helper-text" />
               <FormHelperText id="nome-helper-text">Endereço do funcionalidade</FormHelperText>
             </FormControl>
           </Grid>
