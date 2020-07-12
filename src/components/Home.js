@@ -39,10 +39,6 @@ function Home() {
     const [wait, setWait] = useState(false);
     const match = useRouteMatch();
 
-    function isPerfilAdm(){
-      return user && user.perfis && user.perfis.find(item => item === 'fazenda');
-    }
-
     return (
       <Container maxWidth='xl' className={classes.root}>
         { !loading &&
