@@ -5,6 +5,7 @@ import { useCurrentUser } from "../server/UseCurrentUser";
 
 import SolicitarAcessoForm from "./user/SolicitarAcessoForm";
 import SolicitarAcessoAcompanhar from "./user/SolicitarAcessoAcompanhar";
+import RecuperarSenhaForm from "./user/RecuperarSenhaForm";
 import { Redirect } from 'react-router-dom';
 
 import {
@@ -59,6 +60,10 @@ function Home() {
 
           <Route path={`${match.path}/solicitarAcesso`}>
             <SolicitarAcessoForm />
+          </Route>
+
+          <Route path={`${match.path}/recuperarSenha`}>
+            <RecuperarSenhaForm/>
           </Route>
 
           <Route path={match.path}>

@@ -174,7 +174,7 @@ export default function SignIn(props) {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="/recuperarSenhha" variant="body2">
+              <Link href="/home/recuperarSenha" variant="body2">
                 Esqueci a senha
               </Link>
             </Grid>
