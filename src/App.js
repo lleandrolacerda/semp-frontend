@@ -9,6 +9,7 @@ import Perfil from "./components/user/Perfil";
 import Login from "./components/user/home/Login";
 import CriarPerfilPanel from "./components/user/CriarPerfilPanel";
 import CriarFuncionalidadePanel from "./components/user/CriarFuncionalidadePanel";
+import CadastrarPerfilPanel from './components/user/CadastrarPerfilPanel';
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
@@ -39,6 +40,9 @@ function App() {
           </Route>
           <Route path="/criarPerfil">
             <CriarPerfilPanel />
+          </Route>
+          <Route path="/CadastrarPerfil">
+            <CadastrarPerfilPanel />
           </Route>
 
           <Route path="/criarFuncionalidade">

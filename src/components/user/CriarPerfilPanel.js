@@ -99,7 +99,7 @@ export default function CriarPerfilPanel() {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        'Authorization': `Bearer ${localStorage.accessToken}`
+        Authorization: `Bearer ${localStorage.accessToken}`
       }
     }).then(res => res.json()).then((result) => {
       if (!pageLoaded) {
@@ -160,9 +160,9 @@ console.log("Filtra perfil")
         </Table>
       </TableContainer>
       <Grid container item sm={12} justify="flex-end" >
-            <Button variant="outlined" color="primary" onClick={handleFiltrarSubmit} type="submit" >
-              Cadastrar Perfil
-            </Button>
+        <Button variant="outlined" color="primary" href="/CadastrarPerfil">
+          Cadastrar Perfil
+        </Button>
       </Grid>
     </Container>
   )
