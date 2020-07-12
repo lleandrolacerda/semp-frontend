@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
-import { Button, Container, FormControl, FormHelperText, Grid, Input, InputLabel, Paper, Select, Typography } from '@material-ui/core';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
+import { Box, Button, Container, Collapse, FormControl, FormHelperText, Grid, IconButton, Input, InputLabel, Paper, 
+    Select, Typography, Table, TableBody, TableContainer, TableHead, TableRow, TableCell } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
+import CloseIcon from '@material-ui/icons/Close';
+import DeleteIcon from '@material-ui/icons/Delete';
+import UpdateIcon from '@material-ui/icons/Update';
+import PageviewIcon from '@material-ui/icons/Pageview';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,9 +37,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const StyledTableCell = withStyles((theme) => createStyles({
-  table: {
-    minWidth: 700,
-  },
   head: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
@@ -78,9 +76,15 @@ function createTable(funcionalidades) {
       <TableBody>
         {funcionalidades.map((row, i) => (
           <StyledTableRow key={i}>
-            <StyledTableCell component="th" scope="row">{row.name}</StyledTableCell>
-            <StyledTableCell component="th" scope="row">{row.endereco}</StyledTableCell>
-            <StyledTableCell component="th" scope="row">Cell3</StyledTableCell>
+            <StyledTableCell component="td" scope="col">{ row.name }</StyledTableCell>
+            <StyledTableCell component="td" scope="col">{ row.endereco }</StyledTableCell>
+            <StyledTableCell component="td" scope="col">
+              <Box>
+                <IconButton onClick={ (event) => handleExcluirFuncionalidade(event, i)}><DeleteIcon /></IconButton>
+                <IconButton onClick={ (event) => handleAtualizarFuncionalidade(event, i)}><UpdateIcon /></IconButton>
+                <IconButton onClick={ (event) => handleVisualizarFuncionalidade(event, i)}><PageviewIcon /></IconButton>
+              </Box>
+            </StyledTableCell>
           </StyledTableRow>
         ))}
       </TableBody>
@@ -92,9 +96,28 @@ function createTable(funcionalidades) {
   }
 }
 
+function handleExcluirFuncionalidade(event, i) {
+  console.log("Excluir Funcionalidade: ", i, event);
+  }
+  
+  function handleAtualizarFuncionalidade(event, i) {
+  console.log("Atualizar Funcionalidade: ", i, event);
+  }
+  
+  function handleVisualizarFuncionalidade(event, i) {
+  console.log("Visualizar Funcionalidade: ", i, event);
+  }
+
 export default function CriarFuncionalidadePanel() {
   const classes = useStyles();
   const [funcionalidades, setFuncionalidade] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
+  const [msgErro, setMsgErro] = React.useState('');
+  const [campo, setCampo] = React.useState('');
+
+  const handleChangeCampo = event => {
+    setCampo(event.target.value);
+  } 
 
   useEffect(() => {
     fetch("/api/funcionalidade",
@@ -112,12 +135,64 @@ export default function CriarFuncionalidadePanel() {
     });
   }, [funcionalidades]);
 
-  const handleFiltrarSubmit = e => {
-    console.log("Filtra funcionalidade")
+  const handleFiltrarSubmit = event => {
+    event.preventDefault();
+    let endpoint = '/api/funcionalidade/filtrar';
+    const filtro = document.getElementById('filtro').value;
+    if (!filtro || !campo) {
+      endpoint = '/api/funcionalidade';
+    } else {
+      endpoint = endpoint + '/' + campo + '/' + filtro;
+    }
+
+    fetch(endpoint, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${localStorage.accessToken}`
+      },
+      credentials: 'include'
+    }).then(response => {
+      if (response.ok && (response.status == 200)) {
+        response.json().then((result) => {
+          setFuncionalidade(result);
+        });
+      } else {
+        response.json().then((error) => {
+          setOpen(true);
+          setMsgErro((error && error.message) || 'Oops! Something went wrong. Please try again!' );
+        });
+      }
+      console.log(response);
+    }).catch(error => {
+      setOpen(true);
+      setMsgErro( (error && error.message) || 'Oops! Something went wrong. Please try again!' );
+      console.log(">>ERRO<<", error);
+    });
   };
 
   return (
     <Container className={classes.root} maxWidth="md">
+      <div className={classes.root}>
+        <Collapse in={open}>
+          <Alert
+          action={
+            <IconButton
+            aria-label="close"
+            color="inherit"
+            size="small"
+            onClick={() => {
+                setOpen(false);
+            }}
+            >
+            <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          >
+          {msgErro}
+          </Alert>
+        </Collapse>
+      </div>
       <form className={classes.root} noValidate autoComplete="off" actuion="#" method="post" onSubmit={handleFiltrarSubmit} >
         <Grid container className={classes.root} spacing={3}>
           <Grid item sm={12}>
@@ -128,16 +203,20 @@ export default function CriarFuncionalidadePanel() {
               <Grid item sm={3}>
                 <FormControl className={classes.formControl} fullWidth >
                   <InputLabel htmlFor="name">Campo</InputLabel>
-                  <Select label="Campo filtro" placceholder="Campo">
-                    {createCampoFuncionalidade()}
+                  <Select label="Campo filtro" placceholder="Campo" onChange={handleChangeCampo} defaultValue={''} >
+                    {
+                      camposFuncionalidade.map((campo, i) => (
+                        <option key={i} value={camposFuncionalidade[i].tipo}>{camposFuncionalidade[i].nome}</option>
+                      ))
+                    }
                   </Select>
                   <FormHelperText id="nome-helper-text">Campo filtro</FormHelperText>
                 </FormControl>
               </Grid>
               <Grid item sm={7}>
-                <FormControl className={classes.formControl} fullWidth >
+              <FormControl className={classes.formControl} fullWidth >
                   <InputLabel htmlFor="filtro"></InputLabel>
-                  <Input name="filtro" aria-describedby="filtro-helper-text" />
+                  <Input id="filtro" name="filtro" aria-describedby="filtro-helper-text" />
                   <FormHelperText id="filtro-helper-text"></FormHelperText>
                 </FormControl>
               </Grid>
