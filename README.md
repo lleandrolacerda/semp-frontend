@@ -10,6 +10,10 @@ Referencia:
     <li>Provider do datapicker: https://material-ui-pickers.dev/getting-started/installation</li>
 </ul>
 
+[![Quality Gate Status](https://sonar.prodf.verytecnologia.com.br/api/project_badges/measure?project=front-end&metric=alert_status)](https://sonar.prodf.verytecnologia.com.br/dashboard?id=front-end)
+
+
+
 ## Scripts do projeto
 
 Instalar as dependecias
