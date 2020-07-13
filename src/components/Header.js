@@ -117,6 +117,7 @@ export default function Header(props) {
   const [openLogin, setOpenLogin] = React.useState(false);
   const [isSSEStarted, setIsSSEStarted] = React.useState(false);
   const [isLoadUserPost, setIsLoadUserPost] = React.useState(false);
+  const [temAcessoTrocarSenha, setTemAcessoTrocarSenha] = React.useState(false);
 
   const [userPost, setUserPost] = React.useState([]);
 
@@ -155,9 +156,24 @@ export default function Header(props) {
       }
     }
 
+    async function fetchDataTemAcessoTrocarSenha() {
+      const response = await fetch('api/menu/acesso/trocarsenha', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${localStorage.accessToken}`
+        }
+      });
+      const data = await response.json();
+      if ((data != null) && (data != undefined)) {
+        setTemAcessoTrocarSenha(data);
+      }
+    }
+
     if( !isLoadUserPost && !!profile ){
       setIsLoadUserPost(true);
       fetchData();
+      fetchDataTemAcessoTrocarSenha();
       //TODO descomentar
       // initEventSource();
     }
@@ -281,14 +297,13 @@ export default function Header(props) {
   const menuNotificacaoId = 'menu-notificacao-id';
 
   const menuItem = (profile) => {
-    if (profile && profile.id) {
+    if (temAcessoTrocarSenha) {
       return (
         <div>
           <MenuItem onClick={handlePerfil}>Perfil</MenuItem>
           <MenuItem onClick={handleCriarUmaConta}>Minha conta</MenuItem>
           <MenuItem onClick={handleLogout}>Sair</MenuItem>
           <MenuItem onClick={handleTrocaSenha}>Trocar senha</MenuItem>
-
         </div>
       )
     } else {

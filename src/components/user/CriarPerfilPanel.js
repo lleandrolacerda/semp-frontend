@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
-import { Box, Button, Container, Collapse, FormControl, FormHelperText, Grid, IconButton, Input, InputLabel, Paper, 
+import { Box, Button, Container, Collapse, FormControl, FormHelperText, Grid, IconButton, Input, InputLabel, MenuItem, Paper, 
     Select, Typography, Table, TableBody, TableContainer, TableHead, TableRow, TableCell } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
@@ -107,7 +107,7 @@ export default function CriarPerfilPanel() {
 
   const handleChangeCampo = event => {
     setCampo(event.target.value);
-  } 
+  }
 
   useEffect(() => {
     fetch("/api/perfil",
@@ -127,12 +127,12 @@ export default function CriarPerfilPanel() {
 
   const handleFiltrarSubmit = event => {
     event.preventDefault();
-    let endpoint = '/api/perfil/filtrar';
+    let endpoint = null;
     const filtro = document.getElementById('filtro').value;
-    if (!filtro || !campo) {
+    if (!filtro || (campo === '')) {
       endpoint = '/api/perfil';
     } else {
-      endpoint = endpoint + '/' + campo + '/' + filtro;
+      endpoint = '/api/perfil/filtrar' + '/' + campo + '/' + filtro;
     }
 
     fetch(endpoint, {
@@ -194,10 +194,10 @@ console.log("Campo: " + campo);
               <Grid item sm={3}>
                 <FormControl className={classes.formControl} fullWidth >
                   <InputLabel htmlFor="name">Campo</InputLabel>
-                  <Select label="Campo filtro" placceholder="Campo" onChange={handleChangeCampo} defaultValue={''} >
+                  <Select label="Campo filtro" placceholder="Campo" onChange={handleChangeCampo} defaultValue={''}  value={campo} >
                     {
                       camposPerfil.map((campo, i) => (
-                        <option key={i} value={camposPerfil[i].tipo}>{camposPerfil[i].nome}</option>
+                        <MenuItem key={i} value={camposPerfil[i].tipo}>{camposPerfil[i].nome}</MenuItem>
                       ))
                     }
                   </Select>
