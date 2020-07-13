@@ -126,7 +126,7 @@ export default function SolicitarAcessoForm() {
   const [values, setValues] = React.useState({
     cpf: '',
     nome: '',
-    tel: '',
+    telefone: '',
     nomeMae: '',
     email: '',
     cnpj:'',
@@ -256,7 +256,7 @@ export default function SolicitarAcessoForm() {
         erro:false,
         msg:''
       },
-      tel:{
+      telefone:{
         erro:false,
         msg:''
       },
@@ -275,7 +275,7 @@ export default function SolicitarAcessoForm() {
     
     let e = resetErro();
     if( !dados.solicitante.telefone){
-      e.tel = {
+      e.telefone = {
         erro: true,
         msg: "Telefone é obritatório"
       }
@@ -284,7 +284,7 @@ export default function SolicitarAcessoForm() {
     if( !dados.solicitante.email){
       e.email = {
         erro: true,
-        msg: "Telefone é obritatório"
+        msg: "Email é obritatório"
       }
       ok = false;
     }
@@ -317,6 +317,10 @@ export default function SolicitarAcessoForm() {
       uuid: d.uuid
     }));
 
+    let historico = {
+      data: new Date(),
+      text: "Solicitação"
+    }
     const dados = {
       solicitante:{
         nome: values.nome,
@@ -324,13 +328,14 @@ export default function SolicitarAcessoForm() {
         email: values.email,
         dataNascimento: values.dataNascimento?values.dataNascimento.getTime():null,
         nomeMae: values.nomeMae,
-        telefone: values.tel
+        telefone: values.telefone
       },
       empresa: {
         nomeEmpresa: values.nomeEmpresa,
         cnpj: values.cnpj
       },
-      documentos: docs
+      documentos: docs,
+      historico:[historico]
     }
 
     if( !validarSubmit(dados)){
@@ -482,12 +487,12 @@ export default function SolicitarAcessoForm() {
                         <Grid item xs={4}>
                           <TextField
                             required
-                            error={error.tel.erro}
-                            helperText={error.tel.msg}
+                            error={error.telefone.erro}
+                            helperText={error.telefone.msg}
                             label="Telefone para contato"
                             value={values.telefone}
                             onChange={handleChangeInputForm}
-                            name="tel"
+                            name="telefone"
                             id="tel-mask-input"
                             fullWidth
                             InputProps={{

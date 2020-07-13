@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import { fade, createStyles, makeStyles} from '@material-ui/core/styles';
 import {Container, Grid, InputBase, Paper} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import UsersTable from './UsersTable';
+import AutorizarAcessoTable from './AutorizarAcessoTable';
 import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) =>
@@ -57,7 +57,7 @@ let users = null;
 let elapseTime = 0;
 let tempo = 600;
 let filtroCampo=null
-export default function UsersPanel() {
+export default function AutorizarAcessoPanel() {
     const classes = useStyles();
     const [dados, setDados] = React.useState([]);
 
@@ -65,7 +65,7 @@ export default function UsersPanel() {
     
     useEffect(() => {
         async function fetchData(){
-            const response = await fetch('/api/usuariosSistema');
+            const response = await fetch('/api/solicitarAcesso/all');
             const data = await response.json();
             if( data.status > 300){
                 setErro(data);
@@ -149,7 +149,7 @@ export default function UsersPanel() {
                 </div>
                 </Grid>
                 <Grid item xs={12}>
-                    <UsersTable rows={ dados }/>
+                    <AutorizarAcessoTable rows={ dados }/>
                 </Grid>
             </Grid>
             </Paper>

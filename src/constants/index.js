@@ -37,7 +37,14 @@ export function ValidarCPF(strCPF) {
     if (Resto !== parseInt(strCPF.substring(10, 11) ) ) return false;
     return true;
 }
-
+export  function FormataData(data){
+    var dia  = data.getDate().toString(),
+    diaF = (dia.length == 1) ? '0'+dia : dia,
+    mes  = (data.getMonth()+1).toString(), //+1 pois no getMonth Janeiro começa com zero.
+    mesF = (mes.length == 1) ? '0'+mes : mes,
+    anoF = data.getFullYear();
+    return diaF+"/"+mesF+"/"+anoF;
+}
 export function ValidarCNPJ(cnpj) {
         cnpj = cnpj.replace(/[^\d]+/g,'');
         if(cnpj === '') return false;

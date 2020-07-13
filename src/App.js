@@ -13,6 +13,7 @@ import CadastrarPerfilPanel from './components/user/CadastrarPerfilPanel';
 import UsersPanel from './components/user/UsersPanel';
 import TrocarSenhaPanel from './components/user/TrocarSenhaPanel';
 import CadastrarFuncionalidadePanel from './components/user/CadastrarFuncionalidadePanel';
+import AutorizarAcessoPanel from './components/user/AutorizarAcessoPanel';
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
@@ -60,6 +61,10 @@ function App() {
 
           <Route path="/criarFuncionalidade">
             <CriarFuncionalidadePanel />
+          </Route>
+
+          <Route path="/autorizaAcesso">
+            <AutorizarAcessoPanel/>
           </Route>
 
           <Route path="/login">
