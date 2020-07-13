@@ -91,7 +91,9 @@ function createTable(funcionalidades) {
     );
   } else {
     return (
-      <StyledTableRow><TableCell colSpan={3}><center>Nenhuma Funcionalidade cadastrada</center></TableCell></StyledTableRow>
+      <TableBody>
+        <StyledTableRow><TableCell colSpan={3}><center>Nenhuma Funcionalidade cadastrada</center></TableCell></StyledTableRow>
+      </TableBody>
     );
   }
 }
@@ -199,7 +201,7 @@ export default function CriarFuncionalidadePanel() {
             <Paper className={classes.paper}>
               <Typography component="h1" variant="h5" gutterBottom>Funcionalidades</Typography>
             </Paper>
-            <Grid className={classes.gridControl} container direction="row" sm={12} spacing={2}>
+            <Grid className={classes.gridControl} container direction="row" spacing={2}>
               <Grid item sm={3}>
                 <FormControl className={classes.formControl} fullWidth >
                   <InputLabel htmlFor="name">Campo</InputLabel>
@@ -237,8 +239,8 @@ export default function CriarFuncionalidadePanel() {
               <StyledTableCell>Endereço de funcionalidades</StyledTableCell>
               <StyledTableCell>Ação</StyledTableCell>
             </TableRow>
-            { createTable(funcionalidades) }
           </TableHead>
+          { createTable(funcionalidades) }
         </Table>
       </TableContainer>
       <Grid container item sm={12} justify="flex-end" >
