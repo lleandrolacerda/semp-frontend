@@ -87,7 +87,12 @@ export default function UsersPanel() {
                 let campos = filtroCampo.split(' ');
                 root: for( var x in d){
                     for( var y in campos){
-                        if( d[x] === campos[y]){
+                        if( typeof d[x] === 'string' ){
+                            if( (d[x] && campos[y]) && (d[x].toUpperCase().includes(campos[y].toUpperCase())) ){
+                                arr.push( d );
+                                break root;
+                            }
+                        }else if( d[x] === campos[y]){
                             arr.push( d );
                             break root;
                         }

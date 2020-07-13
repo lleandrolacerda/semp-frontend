@@ -25,7 +25,6 @@ function useCurrentUser() {
     // } else {
     
     useEffect(() => {
-        // console.log('>>>useEffect do useCurrentUser<<<');
         async function fetchUrl() {
 
             if (!localStorage.getItem(ACCESS_TOKEN)) {
@@ -34,7 +33,6 @@ function useCurrentUser() {
             } else {
                 const profile = localStorage.getItem(ACCESS_TOKEN+"_PROFILE");
                 if( !profile || profile.length === 0 ){
-                    console.log(">>>NÃO pegando do logalstorage<<<");
                     return request({
                         url: API_BASE_URL + "/api/user/me",
                         method: 'GET',
@@ -44,7 +42,6 @@ function useCurrentUser() {
                             'Authorization': `Bearer ${localStorage.accessToken}`
                         }
                     }).then(response => {
-                        console.log(response.status);
                         if (response.status === 401) {
                             return {
                                 erro: true,
