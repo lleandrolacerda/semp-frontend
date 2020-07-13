@@ -42,7 +42,7 @@ let currentRow=-1;
 
 export default function SolicitarAcessoDocTable(props) {
     const classes = useStyles();
-    const {rows, setRows, erro, setErro} = props;
+    const {rows, setRows, setErro} = props;
 
     function fileClick(){
         let file = document.getElementById("file");

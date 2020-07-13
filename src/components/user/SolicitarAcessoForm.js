@@ -188,7 +188,9 @@ export default function SolicitarAcessoForm() {
                 ...values, 
                 nome:result.name,
                 nomeMae: result.nomeMae,
-                dataNascimento: new Date(result.dataNascimento)
+                dataNascimento: new Date(result.dataNascimento),
+                email: result.email,
+                telefone: result.telefone
               });
               setSelectedDate( new Date(result.dataNascimento) );
               setEditavel(false);
@@ -451,6 +453,9 @@ export default function SolicitarAcessoForm() {
                             label="Data Nascimento"
                             format="MM/dd/yyyy"
                             fullWidth
+                            InputProps={{
+                              readOnly: !editavel,
+                            }}
                             value={selectedDate}
                             onChange={handleDateChange}
                             KeyboardButtonProps={{
@@ -465,6 +470,9 @@ export default function SolicitarAcessoForm() {
                             label="Nome da mae"
                             value={values.nomeMae}
                             onChange={handleChangeInputForm}
+                            InputProps={{
+                              readOnly: !editavel,
+                            }}
                             name="nomeMae"
                             id="nome-Mae"
                             variant="outlined"
@@ -485,6 +493,7 @@ export default function SolicitarAcessoForm() {
                             InputProps={{
                               inputComponent: TelMask,
                             }}
+                            
                             variant="outlined"
                           />
                         </Grid>
@@ -495,8 +504,11 @@ export default function SolicitarAcessoForm() {
                             helperText={error.email.msg}
                             fullWidth
                             label="Email para contato"
-                            value={values.telefone}
+                            value={values.email}
                             onChange={handleChangeInputForm}
+                            InputProps={{
+                              readOnly: !editavel,
+                            }}
                             name="email"
                             id="email-input"
                             variant="outlined"

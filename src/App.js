@@ -11,6 +11,7 @@ import CriarPerfilPanel from "./components/user/CriarPerfilPanel";
 import CriarFuncionalidadePanel from "./components/user/CriarFuncionalidadePanel";
 import CadastrarPerfilPanel from './components/user/CadastrarPerfilPanel';
 import TrocarSenhaPanel from './components/user/TrocarSenhaPanel';
+import CadastrarFuncionalidadePanel from './components/user/CadastrarFuncionalidadePanel';
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
@@ -47,6 +48,10 @@ function App() {
           </Route>
           <Route path="/trocarSenha">
             <TrocarSenhaPanel />
+          </Route>
+
+          <Route path="/CadastrarFuncionalidade">
+            <CadastrarFuncionalidadePanel />
           </Route>
 
           <Route path="/criarFuncionalidade">
