@@ -34,11 +34,11 @@ export default function CriarFuncionalidadePanel() {
         Authorization: `Bearer ${localStorage.accessToken}`
       },
       body: JSON.stringify(
-          {
-          name: document.getElementById('name').value,
-          endereco: document.getElementById('endereco').value
-          }
-        ),
+      {
+        name: document.getElementById('name').value,
+        endereco: document.getElementById('endereco').value,
+        icone: document.getElementById('icone').value
+      }),
       credentials: 'include'
     }).then(response => {
       if (response.ok && (response.status == 202)) {
@@ -86,13 +86,18 @@ export default function CriarFuncionalidadePanel() {
             </Typography>
             <FormControl fullWidth >
               <InputLabel htmlFor="name">Nome</InputLabel>
-              <Input id="name" name="name" aria-describedby="nome-helper-text" />
-              <FormHelperText id="nome-helper-text">Nome do funcionalidade</FormHelperText>
+              <Input id="name" name="name" aria-describedby="name-helper-text" />
+              <FormHelperText id="name-helper-text">Nome do funcionalidade</FormHelperText>
             </FormControl>
             <FormControl fullWidth >
               <InputLabel htmlFor="endereco">Endereço</InputLabel>
               <Input id="endereco" name="endereco" aria-describedby="endereco-helper-text" />
-              <FormHelperText id="nome-helper-text">Endereço do funcionalidade</FormHelperText>
+              <FormHelperText id="endereco-helper-text">Endereço do funcionalidade</FormHelperText>
+            </FormControl>
+            <FormControl fullWidth >
+              <InputLabel htmlFor="icone">Ícone</InputLabel>
+              <Input id="icone" name="icone" aria-describedby="icone-helper-text" />
+              <FormHelperText id="icone-helper-text">Ícone a ser apresentado para a funcionalidade</FormHelperText>
             </FormControl>
           </Grid>
           <Grid item xs={12} className={classes.paper} >
