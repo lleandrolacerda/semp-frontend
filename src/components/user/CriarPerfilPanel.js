@@ -58,17 +58,17 @@ const camposPerfil = [ {'nome': '--', 'tipo': '' }, {'nome': 'Nome do perfil', '
 
 let pageLoaded = false;
 
-function createTable(perfis) {
+function createTable(perfis, setPerfil, setOpen, setMsgErro) {
   if (perfis && (perfis.length > 0)) {
     return (
       <TableBody>
         {perfis.map((row, i) => (
           <StyledTableRow key={i}>
             <StyledTableCell component="td" scope="col">{ row.name }</StyledTableCell>
-            <StyledTableCell component="td" scope="col">Cell2</StyledTableCell>
+            <StyledTableCell component="td" scope="col">{ (row.funcionalidades ? row.funcionalidades.length : 0)}</StyledTableCell>
             <StyledTableCell component="td" scope="col">
               <Box>
-                <IconButton onClick={ (event) => handleExcluirPerfil(event, i)}><DeleteIcon /></IconButton>
+                <IconButton onClick={ (event) => handleExcluirPerfil(row, perfis, setPerfil, setOpen, setMsgErro)}><DeleteIcon /></IconButton>
                 <IconButton onClick={ (event) => handleAtualizarPerfil(event, i)}><UpdateIcon /></IconButton>
                 <IconButton onClick={ (event) => handleVisualizarPerfil(event, i)}><PageviewIcon /></IconButton>
               </Box>
@@ -86,8 +86,30 @@ function createTable(perfis) {
   }
 }
 
-function handleExcluirPerfil(event, i) {
-console.log("Excluir Perfil: ", i, event);
+function handleExcluirPerfil(perfil, perfis, setPerfil, setOpen, setMsgErro) {
+  const id = perfil.id;
+  fetch('/api/perfil/' + id, {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${localStorage.accessToken}`
+    },
+    credentials: 'include'
+  }).then(response => {
+    if (response.ok && (response.status === 202)) {
+debugger;
+    } else {
+      response.json().then((error) => {
+        setOpen(true);
+        setMsgErro((error && error.message) || 'Oops! Something went wrong. Please try again!' );
+      });
+    }
+    console.log(response);
+  }).catch(error => {
+    setOpen(true);
+    setMsgErro( (error && error.message) || 'Oops! Something went wrong. Please try again!' );
+    console.log(">>ERRO<<", error);
+  });
 }
 
 function handleAtualizarPerfil(event, i) {
@@ -132,7 +154,7 @@ export default function CriarPerfilPanel() {
     if (!filtro || (campo === '')) {
       endpoint = '/api/perfil';
     } else {
-      endpoint = '/api/perfil/filtrar' + '/' + campo + '/' + filtro;
+      endpoint = '/api/perfil/filtrar/' + campo + '/' + filtro;
     }
 
     fetch(endpoint, {
@@ -143,7 +165,7 @@ export default function CriarPerfilPanel() {
       },
       credentials: 'include'
     }).then(response => {
-      if (response.ok && (response.status == 200)) {
+      if (response.ok && (response.status === 200)) {
         response.json().then((result) => {
           setPerfil(result);
         });
@@ -160,7 +182,7 @@ export default function CriarPerfilPanel() {
       console.log(">>ERRO<<", error);
     });
   };
-console.log("Campo: " + campo);
+
   return (
     <Container className={classes.root} maxWidth="md">
       <div className={classes.root}>
@@ -229,7 +251,7 @@ console.log("Campo: " + campo);
               <StyledTableCell>Ação</StyledTableCell>
             </TableRow>
           </TableHead>
-          { createTable(perfis) }
+          { createTable(perfis, setPerfil, setOpen, setMsgErro) }
         </Table>
       </TableContainer>
       <Grid container item sm={12} justify="flex-end" >

@@ -41,7 +41,7 @@ export default function CriarFuncionalidadePanel() {
       }),
       credentials: 'include'
     }).then(response => {
-      if (response.ok && (response.status == 202)) {
+      if (response.ok && (response.status === 201)) {
         history.push('/criarFuncionalidade');
       } else {
         response.json().then((error) => {

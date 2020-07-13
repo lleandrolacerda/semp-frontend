@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
-import { Box, Button, Container, Collapse, FormControl, FormHelperText, Grid, IconButton, Input, InputLabel, Paper, 
+import { Box, Button, Container, Collapse, FormControl, FormHelperText, Grid, IconButton, Input, InputLabel, MenuItem, Paper, 
     Select, Typography, Table, TableBody, TableContainer, TableHead, TableRow, TableCell } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import UpdateIcon from '@material-ui/icons/Update';
 import PageviewIcon from '@material-ui/icons/Pageview';
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,18 +56,6 @@ const StyledTableRow = withStyles((theme) => createStyles({
 const camposFuncionalidade = [ {'nome': '--', 'tipo': '' }, {'nome': 'Nome', 'tipo': 'name' }];
 
 let pageLoaded = false;
-
-function createCampoFuncionalidade() {
-
-  let items = [];
-
-  for (let i = 0; i < camposFuncionalidade.length; i++) {
-  
-    items.push(<option key={i} value={camposFuncionalidade[i].tipo}>{camposFuncionalidade[i].nome}</option>)
-  }
-
-  return items;
-}
 
 function createTable(funcionalidades) {
   if (funcionalidades && (funcionalidades.length > 0)) {
@@ -155,7 +142,7 @@ export default function CriarFuncionalidadePanel() {
       },
       credentials: 'include'
     }).then(response => {
-      if (response.ok && (response.status == 200)) {
+      if (response.ok && (response.status === 200)) {
         response.json().then((result) => {
           setFuncionalidade(result);
         });
@@ -208,7 +195,7 @@ export default function CriarFuncionalidadePanel() {
                   <Select label="Campo filtro" placceholder="Campo" onChange={handleChangeCampo} defaultValue={''} >
                     {
                       camposFuncionalidade.map((campo, i) => (
-                        <option key={i} value={camposFuncionalidade[i].tipo}>{camposFuncionalidade[i].nome}</option>
+                        <MenuItem key={i} value={camposFuncionalidade[i].tipo}>{camposFuncionalidade[i].nome}</MenuItem>
                       ))
                     }
                   </Select>
