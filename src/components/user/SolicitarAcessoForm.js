@@ -28,7 +28,7 @@ import {
 const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
-      width: '100%',
+      width: '100%'
     },
     paper: {
       padding: theme.spacing(2),
