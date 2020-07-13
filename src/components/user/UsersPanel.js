@@ -64,11 +64,9 @@ export default function UsersPanel() {
     const [erro, setErro] = useState();
     
     useEffect(() => {
-        console.log('>>>useEffect<<<')
         async function fetchData(){
             const response = await fetch('/api/usuariosSistema');
             const data = await response.json();
-            console.log( data );
             if( data.status > 300){
                 setErro(data);
                 return;
@@ -83,11 +81,8 @@ export default function UsersPanel() {
       },[dados] );
 
       function filtraDado(){
-        console.log('>>>>deve<<<<', filtroCampo);
-
         let arr = [];
         users.forEach(d => {
-            console.log( d );    
             if( filtroCampo ){
                 let campos = filtroCampo.split(' ');
                 root: for( var x in d){
@@ -116,7 +111,6 @@ export default function UsersPanel() {
 
     }
     function disparaSearch(){
-        console.log('diffff ', (performance.now() - elapseTime ) ); 
         setTimeout(function () {
             if( performance.now() - elapseTime > tempo ){
                 filtraDado(filtroCampo);
