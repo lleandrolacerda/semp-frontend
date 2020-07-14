@@ -23,6 +23,10 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: '5px',
     marginRight: '5px'
   },
+  gridAction: {
+    display: 'flex',
+    justifyContent: 'flex-end'
+  },
   select: {
     height: '300px'
   },
@@ -281,7 +285,7 @@ export default function CriarPerfilPanel() {
         </Grid>
 
         <Container maxWidth="sm">
-          <Grid item xs={12} className={classes.paper} >
+          <Grid className={classes.gridAction} item xs={12} item justifyContent='flex-end' >
             <Button variant="outlined" color="primary" onClick={handleSubmit} type="submit">
               Ok
             </Button>
