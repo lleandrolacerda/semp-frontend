@@ -21,6 +21,8 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+let pageLoaded = false;
+
 export default function FormMinhaConta() {
     const classes = useStyles();
     const history = useHistory();
@@ -32,20 +34,10 @@ export default function FormMinhaConta() {
         login: '',
         pass: ''
     });
-    const [state, setState] = React.useState({
-        fazenda: false,
-        estudante: false,
-        tecnico: false,
-        colaborador: false,
-        adm: false
-    });
 
     let [profile] = useCurrentUser();
 
     useEffect(() => {
-        console.log('AAAAAAAAAA')
-        console.log("profile", profile);
-        
         if (profile) {
             if(isFirstRender.current){
                 isFirstRender.current=false
@@ -57,23 +49,14 @@ export default function FormMinhaConta() {
             user.email = profile.email;
             user.login = profile.login;
             user.perfis = profile.perfis;
-            if (user.perfis) {
-                let s = { ...state };
-                for (let x in user.perfis) {
-                    s[user.perfis[x]] = true;
-                }
-                console.log(s);
-                setState(s);
-            }
             setUser(user);
         }
-    }, [profile, user, state]);
+    }, [profile, user]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
         user.provider = 'local'; //autencição no sistema local
-        console.log(user);
 
         fetch('/api/formMinhaConta' + ((user.id) ? '/' + user.id.toString() : ''), {
             method: (user.id) ? 'PUT' : 'POST',
@@ -89,50 +72,11 @@ export default function FormMinhaConta() {
         }).catch(error => {
             console.log(">>ERRO<<", error);
         });
-
     }
-
 
     const handleChange = e => {
-        // const target = event.target;
-        // const value = target.value;
-        // const name = target.id;
-        // console.log(name, value);
-        // let u = {};
-        // for(let x in user){
-        //     u[x] = user[x];
-        // }
-        // if( value ){
-        //     u[name]=value;
-        // }
-        // setUser(u);
         setUser({ ...user, [e.target.name]: e.target.value });
     };
-    const handleChangePerfil = event => {
-
-
-        const target = event.target;
-        const name = target.id;
-
-        console.log('Lucas bunitao', name)
-        let u = {};
-        for (let x in user) {
-            u[x] = user[x];
-        }
-        if (!u.perfis) u.perfis = [];
-        if (!target.checked) {
-            let item = u.perfis.indexOf(name); //.perfis.find( f => f === name);    
-            u.perfis.splice(item, 1);
-        } else {
-            u.perfis.push(name);
-        }
-
-        let st = { ...state };
-        st[name] = !st[name]
-        setState(st);
-        setUser(u);
-    }
-
 
     return (
         <Container maxWidth="sm">
@@ -175,48 +119,17 @@ export default function FormMinhaConta() {
                         <FormControl component="fieldset" className={classes.formControl}>
                             <FormLabel component="legend">Acesso ao sistema</FormLabel>
                             <FormGroup>
-                                <FormControlLabel
-                                    control={
-                                        // if( user && user.perfis && user.perfis.find(element => element == 'fazenda') )
-                                        <Checkbox id="fazenda" checked={state.fazenda} onChange={handleChangePerfil} value={state.fazenda} />
-
-
-                                    }
-
-                                    label="Adiministrador fazenda"
-
-                                />
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox id="estudante" checked={state.estudante} onChange={handleChangePerfil} value={state.estudante} />
-                                    }
-                                    label="Estudante e Hobista"
-
-                                />
-
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox id="tecnico" checked={state.tecnico} onChange={handleChangePerfil} value={state.tecnico} />
-                                    }
-                                    label="Tecnico e especialista"
-                                />
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox id="colaborador" checked={state.colaborador} onChange={handleChangePerfil} value={state.colaborador} />
-                                    }
-                                    label="Colaborador"
-                                />
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox id="adm" checked={state.adm} onChange={handleChangePerfil} value={state.adm} />
-                                    }
-                                    label="Adiministrador do sistema"
-
-                                />
-
-
+                                <ul>
+                            {
+                                profile &&
+                                profile.perfis.map((campo, i) => (
+                                <li key={i}>{ campo }</li>
+                                ))
+                            }
+                                </ul>
                             </FormGroup>
-                            <FormHelperText>Para apresentar as funcionalidade que terá no sistema</FormHelperText>
+                            <br/>
+                            <FormHelperText>Perfis de acesso que o usuario tem junto ao sistema.</FormHelperText>
                         </FormControl>
                     </Grid>
 
