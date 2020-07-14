@@ -67,6 +67,7 @@ function App() {
             <AutorizarAcessoPanel/>
           </Route>
 
+
           <Route path="/login">
             <Login />
           </Route>

@@ -39,11 +39,10 @@ function Home() {
     const [wait, setWait] = useState(false);
     const match = useRouteMatch();
 
+
     return (
       <Container maxWidth='xl' className={classes.root}>
-        { !loading &&
-            user && <h2>Ola: {user.name}</h2>
-        }
+        
         <Backdrop className={classes.backdrop} open={loading || wait}>
           <CircularProgress color="inherit" />
         </Backdrop>
@@ -64,7 +63,7 @@ function Home() {
 
           <Route path={match.path}>
             {
-              !localStorage.accessToken && <Redirect to="/login" />
+              !localStorage.accessToken ? <Redirect to="/login" />:<h2>Ola: {user && user.name}</h2>
             }
           </Route>
         </Switch>

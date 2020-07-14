@@ -47,13 +47,16 @@ export default function AutorizarAcessoTable(props) {
 
     const handleAcao=(e, index) =>{
         console.log('>>>acao<<<', index, rows[index] );
-        if( rows[index].situacao === 'ativo'){
-            history.replace("/revogarAcesso/"+ rows[index].id);
+        // if( rows[index].status === 'ABERTO' || rows[index].status === 'EM_ANALISE')
+        {
+            history.replace("/home/solicitarAcesso/"+ rows[index].id);
         }
     }
     function getTituloSituacao(row){
-        if( row.situacao === 'ativo') return "Revogar";
-        return "Ativar";
+        if( row.status === 'ABERTO') return "Analisar";
+        if( row.status === 'EM_ANALISE') return "Analisar";
+
+        return "Visualizar";
     }
 
     function historico( solicitacao ){
@@ -99,22 +102,11 @@ export default function AutorizarAcessoTable(props) {
                             <StyledTableCell >{ historicoTxt(row) }</StyledTableCell>
                             
                             <TableCell>
-
                                 <Box>
-                                    
                                     <Button variant="outlined" color="primary" onClick={ (e) => handleAcao(e,i) }>
                                         { getTituloSituacao(row) }
                                     </Button>
-                            
-                                    
-                                    {/* <IconButton onClick={ (e) => handleAcao(e,i) }>
-                                        <AttachFileIcon />
-                                    </IconButton>
-                                    <IconButton>
-                                        <DeleteIcon />
-                                    </IconButton> */}
                                 </Box>
-
                             </TableCell>
                         </StyledTableRow>
                     ))}
