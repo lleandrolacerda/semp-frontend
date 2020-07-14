@@ -152,7 +152,6 @@ export default function CriarFuncionalidadePanel() {
           setMsgErro((error && error.message) || 'Oops! Something went wrong. Please try again!' );
         });
       }
-      console.log(response);
     }).catch(error => {
       setOpen(true);
       setMsgErro( (error && error.message) || 'Oops! Something went wrong. Please try again!' );
