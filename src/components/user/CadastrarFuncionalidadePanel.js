@@ -15,6 +15,10 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     color: theme.palette.text.secondary,
   },
+  gridAction: {
+    display: 'flex',
+    justifyContent: 'flex-end'
+  }
 }));
 
 export default function CriarFuncionalidadePanel() {
@@ -41,7 +45,7 @@ export default function CriarFuncionalidadePanel() {
       }),
       credentials: 'include'
     }).then(response => {
-      if (response.ok && (response.status == 202)) {
+      if (response.ok && (response.status === 201)) {
         history.push('/criarFuncionalidade');
       } else {
         response.json().then((error) => {
@@ -100,7 +104,7 @@ export default function CriarFuncionalidadePanel() {
               <FormHelperText id="icone-helper-text">Ícone a ser apresentado para a funcionalidade</FormHelperText>
             </FormControl>
           </Grid>
-          <Grid item xs={12} className={classes.paper} >
+          <Grid item xs={12} className={classes.gridAction} >
             <Button variant="outlined" color="primary" onClick={handleSubmit} type="submit">
               Ok
             </Button>

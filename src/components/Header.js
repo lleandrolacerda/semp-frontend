@@ -81,7 +81,6 @@ export default function Header(props) {
   const [openLogin, setOpenLogin] = React.useState(false);
   const [isSSEStarted, setIsSSEStarted] = React.useState(false);
   const [isLoadUserPost, setIsLoadUserPost] = React.useState(false);
-  const [temAcessoTrocarSenha, setTemAcessoTrocarSenha] = React.useState(false);
 
   const [userPost, setUserPost] = React.useState([]);
 
@@ -120,24 +119,9 @@ export default function Header(props) {
       }
     }
 
-    async function fetchDataTemAcessoTrocarSenha() {
-      const response = await fetch('api/menu/acesso/trocarsenha', {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          Authorization: `Bearer ${localStorage.accessToken}`
-        }
-      });
-      const data = await response.json();
-      if ((data != null) && (data != undefined)) {
-        setTemAcessoTrocarSenha(data);
-      }
-    }
-
     if( !isLoadUserPost && !!profile ){
       setIsLoadUserPost(true);
       fetchData();
-      fetchDataTemAcessoTrocarSenha();
       //TODO descomentar
       // initEventSource();
     }
@@ -181,7 +165,7 @@ export default function Header(props) {
     setUserPost([]);
     if( !state.open ) handleMenuClose();
   }
-  
+
   const handleProfileMenuOpen = event => {
     setAnchorEl(event.currentTarget);
   };
@@ -189,7 +173,6 @@ export default function Header(props) {
   const handleNotifMenuOpen = event => {
     setAnchorElNotif(event.currentTarget);
   }
-
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
@@ -210,7 +193,6 @@ export default function Header(props) {
     history.replace("/Perfil");
     if( !state.open ) handleMenuClose();
   }
- 
 
   const handleTrocaSenha = () => {
     handleMenuClose();
@@ -220,17 +202,15 @@ export default function Header(props) {
     //if( !state.open ) handleMenuClose();
   }
 
-  
-
   const handleLogout = () => {
     console.log('>>>handleLogout<<<');
     localStorage.removeItem(ACCESS_TOKEN);
     localStorage.clear();
     profile = {};
-    
+
     history.push("/home");
     window.location.reload();
-     
+
     if( !state.open ) handleMenuClose();
   }
   const handleMenuClose = () => {
@@ -245,7 +225,6 @@ export default function Header(props) {
     history.push("/post/"+ids);
     handleMenuClose();
   }
-  
 
   const handleMobileMenuOpen = event => {
     setMobileMoreAnchorEl(event.currentTarget);
@@ -261,7 +240,7 @@ export default function Header(props) {
   const menuNotificacaoId = 'menu-notificacao-id';
 
   const menuItem = (profile) => {
-    if (temAcessoTrocarSenha) {
+    if (profile && profile.usuarioExterno) {
       return (
         <div>
           <MenuItem onClick={handlePerfil}>Perfil</MenuItem>
@@ -291,7 +270,7 @@ function sizeUserPost(up){
   return qtd;
 }
 const renderMenuNotificacao =(
-  
+
   <Menu
       anchorEl={anchorElNotif}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}

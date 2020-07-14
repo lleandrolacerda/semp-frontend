@@ -75,7 +75,7 @@ export default function TrocarSenhaPanel() {
         }),
         credentials: 'include'
       }).then(response => {
-        if (response.ok && (response.status == 202)) {
+        if (response.ok && (response.status === 202)) {
           history.push('/home');
         } else {
           response.json().then((error) => {

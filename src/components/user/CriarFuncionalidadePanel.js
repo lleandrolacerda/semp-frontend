@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
-import { Box, Button, Container, Collapse, FormControl, FormHelperText, Grid, IconButton, Input, InputLabel, Paper, 
+import { Box, Button, Container, Collapse, FormControl, FormHelperText, Grid, IconButton, Input, InputLabel, MenuItem, Paper, 
     Select, Typography, Table, TableBody, TableContainer, TableHead, TableRow, TableCell } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import UpdateIcon from '@material-ui/icons/Update';
 import PageviewIcon from '@material-ui/icons/Pageview';
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,57 +57,13 @@ const camposFuncionalidade = [ {'nome': '--', 'tipo': '' }, {'nome': 'Nome', 'ti
 
 let pageLoaded = false;
 
-function createCampoFuncionalidade() {
-
-  let items = [];
-
-  for (let i = 0; i < camposFuncionalidade.length; i++) {
-  
-    items.push(<option key={i} value={camposFuncionalidade[i].tipo}>{camposFuncionalidade[i].nome}</option>)
-  }
-
-  return items;
-}
-
-function createTable(funcionalidades) {
-  if (funcionalidades && (funcionalidades.length > 0)) {
-    return (
-      <TableBody>
-        {funcionalidades.map((row, i) => (
-          <StyledTableRow key={i}>
-            <StyledTableCell component="td" scope="col">{ row.name }</StyledTableCell>
-            <StyledTableCell component="td" scope="col">{ row.endereco }</StyledTableCell>
-            <StyledTableCell component="td" scope="col">
-              <Box>
-                <IconButton onClick={ (event) => handleExcluirFuncionalidade(event, i)}><DeleteIcon /></IconButton>
-                <IconButton onClick={ (event) => handleAtualizarFuncionalidade(event, i)}><UpdateIcon /></IconButton>
-                <IconButton onClick={ (event) => handleVisualizarFuncionalidade(event, i)}><PageviewIcon /></IconButton>
-              </Box>
-            </StyledTableCell>
-          </StyledTableRow>
-        ))}
-      </TableBody>
-    );
-  } else {
-    return (
-      <TableBody>
-        <StyledTableRow><TableCell colSpan={3}><center>Nenhuma Funcionalidade cadastrada</center></TableCell></StyledTableRow>
-      </TableBody>
-    );
-  }
-}
-
-function handleExcluirFuncionalidade(event, i) {
-  console.log("Excluir Funcionalidade: ", i, event);
-  }
-  
-  function handleAtualizarFuncionalidade(event, i) {
+function handleAtualizarFuncionalidade(event, i) {
   console.log("Atualizar Funcionalidade: ", i, event);
-  }
-  
-  function handleVisualizarFuncionalidade(event, i) {
+}
+
+function handleVisualizarFuncionalidade(event, i) {
   console.log("Visualizar Funcionalidade: ", i, event);
-  }
+}
 
 export default function CriarFuncionalidadePanel() {
   const classes = useStyles();
@@ -155,7 +110,7 @@ export default function CriarFuncionalidadePanel() {
       },
       credentials: 'include'
     }).then(response => {
-      if (response.ok && (response.status == 200)) {
+      if (response.ok && (response.status === 200)) {
         response.json().then((result) => {
           setFuncionalidade(result);
         });
@@ -165,13 +120,44 @@ export default function CriarFuncionalidadePanel() {
           setMsgErro((error && error.message) || 'Oops! Something went wrong. Please try again!' );
         });
       }
-      console.log(response);
     }).catch(error => {
       setOpen(true);
       setMsgErro( (error && error.message) || 'Oops! Something went wrong. Please try again!' );
       console.log(">>ERRO<<", error);
     });
   };
+
+  const handleExcluirFuncionalidade = (event, funcionalidade) => {
+    fetch('/api/funcionalidade/' + funcionalidade.id, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${localStorage.accessToken}`
+      },
+      credentials: 'include'
+    }).then(response => {
+      if (response.ok && (response.status === 202)) {
+        const value = [];
+        if (funcionalidades && (funcionalidades.length > 0)) {
+          for (let i = 0; i < funcionalidades.length; i++) {
+            if (funcionalidades[i].id !== funcionalidade.id) {
+              value.push(funcionalidades[i]);
+            }
+          }
+        }
+        setFuncionalidade(value);
+      } else {
+        response.json().then((error) => {
+          setOpen(true);
+          setMsgErro((error && error.message) || 'Oops! Something went wrong. Please try again!' );
+        });
+      }
+    }).catch(error => {
+      setOpen(true);
+      setMsgErro( (error && error.message) || 'Oops! Something went wrong. Please try again!' );
+      console.log(">>ERRO<<", error);
+    });
+  }
 
   return (
     <Container className={classes.root} maxWidth="md">
@@ -208,7 +194,7 @@ export default function CriarFuncionalidadePanel() {
                   <Select label="Campo filtro" placceholder="Campo" onChange={handleChangeCampo} defaultValue={''} >
                     {
                       camposFuncionalidade.map((campo, i) => (
-                        <option key={i} value={camposFuncionalidade[i].tipo}>{camposFuncionalidade[i].nome}</option>
+                        <MenuItem key={i} value={camposFuncionalidade[i].tipo}>{camposFuncionalidade[i].nome}</MenuItem>
                       ))
                     }
                   </Select>
@@ -240,7 +226,23 @@ export default function CriarFuncionalidadePanel() {
               <StyledTableCell>Ação</StyledTableCell>
             </TableRow>
           </TableHead>
-          { createTable(funcionalidades) }
+          <TableBody>
+            { ((funcionalidades && (funcionalidades.length > 0)) ? funcionalidades.map((row, i) => (
+              <StyledTableRow key={i}>
+                <StyledTableCell component="td" scope="col">{ row.name }</StyledTableCell>
+                <StyledTableCell component="td" scope="col">{ row.endereco }</StyledTableCell>
+                <StyledTableCell component="td" scope="col">
+                  <Box>
+                    <IconButton onClick={ (event) => handleExcluirFuncionalidade(event, row)}><DeleteIcon /></IconButton>
+                    <IconButton onClick={ (event) => handleAtualizarFuncionalidade(event, i)}><UpdateIcon /></IconButton>
+                    <IconButton onClick={ (event) => handleVisualizarFuncionalidade(event, i)}><PageviewIcon /></IconButton>
+                  </Box>
+                </StyledTableCell>
+              </StyledTableRow>
+              )) :
+              (<StyledTableRow><TableCell colSpan={3}><center>Nenhuma Funcionalidade cadastrada</center></TableCell></StyledTableRow>)) 
+            }
+          </TableBody>
         </Table>
       </TableContainer>
       <Grid container item sm={12} justify="flex-end" >
