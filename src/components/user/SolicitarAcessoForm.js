@@ -106,7 +106,7 @@ export default function SolicitarAcessoForm() {
   const classes = useStyles();
   const [openBackdrop, setOpenBackdrop] = React.useState(false);
   const [erro, setErro] = useState();
-  const [editavel, setEditavel] = useState(false);
+  const [editavel, setEditavel] = useState(true);
   const [solicitacao, setSolicitacao]= useState();
   const [documentos, setDocumentos] = useState(
     [
@@ -317,10 +317,6 @@ export default function SolicitarAcessoForm() {
       uuid: d.uuid
     }));
 
-    let historico = {
-      data: new Date(),
-      text: "Solicitação"
-    }
     const dados = {
       solicitante:{
         nome: values.nome,
@@ -334,8 +330,7 @@ export default function SolicitarAcessoForm() {
         nomeEmpresa: values.nomeEmpresa,
         cnpj: values.cnpj
       },
-      documentos: docs,
-      historico:[historico]
+      documentos: docs
     }
 
     if( !validarSubmit(dados)){
@@ -572,7 +567,7 @@ export default function SolicitarAcessoForm() {
                   </ExpansionPanel>
                   {
                     values.cnpj.length > 0 && values.nomeEmpresa.length > 0 && 
-                    <SolicitarAcessoDocTable rows={documentos} setRows={setDocumentos} erro={erro} setErro={setErro}/>
+                    <SolicitarAcessoDocTable rows={documentos} setRows={setDocumentos} erro={erro} setErro={setErro} editavel={true} />
                   }
                   
                 </Paper>
