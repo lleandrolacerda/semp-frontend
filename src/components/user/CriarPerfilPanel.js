@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
 import { Box, Button, Container, Collapse, FormControl, FormHelperText, Grid, IconButton, Input, InputLabel, MenuItem, Paper, 
-    Select, Typography, Table, TableBody, TableContainer, TableHead, TableRow, TableCell } from '@material-ui/core';
+    Select, Typography, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, Tooltip } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import UpdateIcon from '@material-ui/icons/Update';
-import PageviewIcon from '@material-ui/icons/Pageview';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -235,9 +235,15 @@ console.log("Visualizar Perfil: ", event);
                 <StyledTableCell component="td" scope="col">{ (row.funcionalidades ? row.funcionalidades.length : 0)}</StyledTableCell>
                 <StyledTableCell component="td" scope="col">
                   <Box>
-                    <IconButton onClick={(event) => handleExcluirPerfil(event, row)}><DeleteIcon /></IconButton>
-                    <IconButton onClick={handleAtualizarPerfil}><UpdateIcon /></IconButton>
-                    <IconButton onClick={handleVisualizarPerfil}><PageviewIcon /></IconButton>
+                    <Tooltip title="Remover funcionalidade">
+                      <IconButton onClick={(event) => handleExcluirPerfil(event, row)}><DeleteIcon /></IconButton>
+                    </Tooltip>
+                    <Tooltip title="Atualizar funcionalidade">
+                      <IconButton onClick={handleAtualizarPerfil}><UpdateIcon /></IconButton>
+                      </Tooltip>
+                    <Tooltip title="Visualizar funcionalidade">
+                      <IconButton onClick={handleVisualizarPerfil}><VisibilityIcon /></IconButton>
+                    </Tooltip>
                   </Box>
                 </StyledTableCell>
               </StyledTableRow>

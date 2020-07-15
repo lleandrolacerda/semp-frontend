@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { createStyles, makeStyles, withStyles } from '@material-ui/core/styles';
 import { Box, Button, Container, Collapse, FormControl, FormHelperText, Grid, IconButton, Input, InputLabel, MenuItem, Paper, 
-    Select, Typography, Table, TableBody, TableContainer, TableHead, TableRow, TableCell } from '@material-ui/core';
+    Select, Typography, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, Tooltip } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import UpdateIcon from '@material-ui/icons/Update';
-import PageviewIcon from '@material-ui/icons/Pageview';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -233,9 +233,15 @@ export default function CriarFuncionalidadePanel() {
                 <StyledTableCell component="td" scope="col">{ row.endereco }</StyledTableCell>
                 <StyledTableCell component="td" scope="col">
                   <Box>
-                    <IconButton onClick={ (event) => handleExcluirFuncionalidade(event, row)}><DeleteIcon /></IconButton>
-                    <IconButton onClick={ (event) => handleAtualizarFuncionalidade(event, i)}><UpdateIcon /></IconButton>
-                    <IconButton onClick={ (event) => handleVisualizarFuncionalidade(event, i)}><PageviewIcon /></IconButton>
+                    <Tooltip title="Remover funcionalidade">
+                      <IconButton onClick={ (event) => handleExcluirFuncionalidade(event, row)}><DeleteIcon /></IconButton>
+                    </Tooltip>
+                    <Tooltip title="Atualizar funcionalidade">
+                      <IconButton onClick={ (event) => handleAtualizarFuncionalidade(event, i)}><UpdateIcon /></IconButton>
+                    </Tooltip>
+                    <Tooltip title="Visualizar funcionalidade">
+                      <IconButton onClick={ (event) => handleVisualizarFuncionalidade(event, i)}><VisibilityIcon /></IconButton>
+                    </Tooltip>
                   </Box>
                 </StyledTableCell>
               </StyledTableRow>
